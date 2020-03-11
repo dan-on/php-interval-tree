@@ -1,5 +1,5 @@
 <?php
-namespace IntervalTree;
+namespace Danon\IntervalTree;
 
 class Interval {
 
@@ -11,7 +11,6 @@ class Interval {
         $this->low = $low;
         $this->high = $high;
     }
-
 
     public function lessThan(Interval $otherInterval)
     {

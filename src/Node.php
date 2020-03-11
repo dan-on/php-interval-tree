@@ -1,5 +1,5 @@
 <?php
-namespace IntervalTree;
+namespace Danon\IntervalTree;
 
 class Node {
 
