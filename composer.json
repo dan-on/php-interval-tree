@@ -1,0 +1,20 @@
+{
+    "name": "dan-on/php-interval-tree",
+    "description": "Is an implementation of interval binary search tree according to Thomas Cormen book \"Introduction to Algorithms\".",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Daniil Akhmetov",
+            "email": "me@dan1.ru"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "IntervalTree\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^5.3 || ^7.0"
+    }
+}
