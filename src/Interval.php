@@ -1,13 +1,18 @@
 <?php
 namespace Danon\IntervalTree;
+use InvalidArgumentException;
 
 class Interval {
 
     public $low;
     public $high;
 
-    public function __construct($low, $high)
+    public function __construct(int $low, int $high)
     {
+        if($low > $high) {
+            throw new InvalidArgumentException('Low interval cannot be greater than high');
+        }
+
         $this->low = $low;
         $this->high = $high;
     }

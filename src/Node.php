@@ -47,6 +47,15 @@ class Node {
         $this->max = $this->item->key ? clone $this->item->key : null;
     }
 
+    public function getValue() {
+        return $this->item->value;
+    }
+
+
+    public function getKey() {
+        return $this->item->key;
+    }
+
     public function isNil() {
         return ($this->item->key === null && $this->item->value === null &&
             $this->left === null && $this->right === null && $this->color === Node::COLOR_BLACK);
