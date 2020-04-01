@@ -1,6 +1,11 @@
 # PHP Interval tree
 Implementation of interval binary search tree.
 
+## Installing
+```
+composer require dan-on/php-interval-tree
+```
+
 ## Usage
 
 ```php
