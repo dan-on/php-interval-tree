@@ -37,3 +37,9 @@ $tree->countIntersections([2, 3]);
 $sortedIntervals = $tree->getKeys(); 
 // Expected array: [[1, 1], [1, 4], [2, 3], [3, 5], [5, 7], [5, 12], [6, 8]]
 ```
+
+## Tests
+
+```
+./vendor/bin/phpunit
+```
