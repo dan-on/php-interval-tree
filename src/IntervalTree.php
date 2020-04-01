@@ -17,9 +17,10 @@ class IntervalTree
 
     /**
      * Returns number of items stored in the interval tree
-     * @returns {number}
+     *
+     * @return int
      */
-    public function getSize()
+    public function getSize(): int
     {
         $count = 0;
         $this->treeWalk($this->root, function () use (&$count) {
@@ -30,9 +31,10 @@ class IntervalTree
 
     /**
      * Returns array of sorted keys in the ascending order
-     * @returns {Array}
+     *
+     * @return void
      */
-    public function getKeys()
+    public function getKeys(): array
     {
         $res = [];
 
@@ -73,7 +75,8 @@ class IntervalTree
 
     /**
      * Returns true if tree is empty
-     * @returns {boolean}
+     *
+     * @return boolean
      */
     public function isEmpty()
     {
@@ -118,11 +121,12 @@ class IntervalTree
 
     /**
      * Insert new item into interval tree
-     * @param key - interval object or array of two numbers [low, high]
-     * @param value - value representing any object (optional)
-     * @returns {Node} - returns reference to inserted node as an object {key:interval, value: value}
+     *
+     * @param array $key - array of two numbers [low, high]
+     * @param mixed $value - value representing any object (optional)
+     * @return Node - returns reference to inserted node
      */
-    public function insert($key, $value = null)
+    public function insert(array $key, mixed $value = null)
     {
         if ($key === null) {
             return;

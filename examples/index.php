@@ -15,6 +15,7 @@ for ($i=0; $i < count($intervals); $i++) {
 
 // Get array of keys sorted in ascendant order
 $sorted_intervals = $tree->getKeys(); //  expected array [[1,1],[1,4],[5,7],[5,12],[6,8]]
+print_r($sorted_intervals);
 
 // Search items which keys intersect with given interval, and return array of values
 $valuesInRange = $tree->iterateIntersections([2,3]);
@@ -26,7 +27,6 @@ foreach($valuesInRange as $node) {
 echo $tree->hasIntersect([66,83]);
 echo $tree->countIntersections([2,3]);
 
-print_r($tree->getIntersections([2,3]));
 
 
 // $tree = new IntervalTree();
