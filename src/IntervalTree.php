@@ -101,7 +101,7 @@ class IntervalTree
      * @param array $interval
      * @return boolean
      */
-    public function hasIntersect(array $interval): bool
+    public function hasIntersection(array $interval): bool
     {
         $nodesIterator = $this->iterateIntersections($interval);
         return $nodesIterator->current() !== null;
@@ -126,7 +126,7 @@ class IntervalTree
      * @param mixed $value - value representing any object (optional)
      * @return Node - returns reference to inserted node
      */
-    public function insert(array $key, mixed $value = null)
+    public function insert(array $key, $value = null)
     {
         if ($key === null) {
             return;
