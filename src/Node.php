@@ -9,24 +9,37 @@ class Node
 
     /**
      * Reference to left child node
+     *
+     * @var Node
      */
     public $left;
 
     /**
      * Reference to right child node
+     *
+     * @var Node
      */
     public $right;
 
     /**
      * Reference to parent node
+     * 
+     * @var Node
      */
     public $parent;
 
     /**
      * Color of node (BLACK or RED)
+     * 
+     * @var int
      */
     public $color;
 
+    /**
+     * Key and value
+     *
+     * @var object
+     */
     public $item;
 
     public $max;

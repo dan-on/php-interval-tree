@@ -46,9 +46,9 @@ class IntervalTree
 
     /**
      * Return array of values in the ascending keys order
-     * @returns {Array}
+     * @return array
      */
-    public function getValues()
+    public function getValues(): array
     {
         $res = [];
         $this->treeWalk($this->root, function ($node) use (&$res) {
@@ -59,9 +59,10 @@ class IntervalTree
 
     /**
      * Returns array of items (<key,value> pairs) in the ascended keys order
-     * @returns {Array}
+     *
+     * @return array
      */
-    public function getItems()
+    public function getItems(): array
     {
         $res = [];
         $this->treeWalk($this->root, function ($node) use (&$res) {
@@ -144,11 +145,12 @@ class IntervalTree
 
     /**
      * Returns true if item {key,value} exist in the tree
+     * 
      * @param key - interval correspondent to keys stored in the tree
      * @param value - value object to be checked
-     * @returns {boolean} - true if item {key, value} exist in the tree, false otherwise
+     * @return bool - true if item {key, value} exist in the tree, false otherwise
      */
-    public function exist($key, $value)
+    public function exist($key, $value): bool
     {
         $searchNode = new Node($key, $value);
         return $this->treeSearch($this->root, $searchNode) ? true : false;
@@ -158,9 +160,9 @@ class IntervalTree
      * Remove entry {key, value} from the tree
      * @param key - interval correspondent to keys stored in the tree
      * @param value - - value object
-     * @returns {boolean} - true if item {key, value} deleted, false if not found
+     * @return bool - true if item {key, value} deleted, false if not found
      */
-    public function remove($key, $value)
+    public function remove($key, $value): bool
     {
         $searchNode = new Node($key, $value);
         $deleteNode = $this->treeSearch($this->root, $searchNode);
@@ -175,13 +177,16 @@ class IntervalTree
      * Method calls a callback function with two parameters (key, value)
      * @param visitor(key,value) - function to be called for each tree item
      */
-    function foreach ($visitor) {
+    public function foreach($visitor)
+    {
         $this->treeWalk($this->root, function ($node) {
             return $visitor($node->item->key, $node->item->value);
         });
     }
 
-    /** Value Mapper. Walk through every node and map node value to another value
+    /** 
+     * Value Mapper. Walk through every node and map node value to another value
+     * 
      * @param callback(value, key) - function to be called for each tree item
      */
     public function map($callback)
@@ -320,13 +325,12 @@ class IntervalTree
 
         $this->recalcMax($fixNode); // update max property upward from fix_node to root
 
-        // COPY DATA !!!
-        // Delete_node becomes cut_node, it means that we cannot hold reference
+        // deleteNode becomes cutNode, it means that we cannot hold reference
         // to node in outer structure and we will have to delete by key, additional search need
         if ($cutNode !== $deleteNode) {
             $deleteNode->copyData($cutNode);
             $deleteNode->updateMax(); // update max property of the cut node at the new place
-            $this->recalcMax($deleteNode); // update max property upward from delete_node to root
+            $this->recalcMax($deleteNode); // update max property upward from deleteNode to root
         }
 
         if ( /*fix_node !== this.nil_node && */$cutNode->color === Node::COLOR_BLACK) {

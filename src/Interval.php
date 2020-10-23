@@ -1,15 +1,16 @@
 <?php
 namespace Danon\IntervalTree;
+
 use InvalidArgumentException;
 
-class Interval {
-
+class Interval
+{
     public $low;
     public $high;
 
     public function __construct(int $low, int $high)
     {
-        if($low > $high) {
+        if ($low > $high) {
             throw new InvalidArgumentException('Low interval cannot be greater than high');
         }
 
@@ -23,7 +24,7 @@ class Interval {
             $this->low == $otherInterval->low && $this->high < $otherInterval->high;
     }
 
-    public function equalTo(Interval $otherInterval) 
+    public function equalTo(Interval $otherInterval)
     {
         return $this->low == $otherInterval->low && $this->high == $otherInterval->high;
     }
@@ -49,19 +50,20 @@ class Interval {
     /**
      * Returns how key should return
      */
-    public function output() {
+    public function output()
+    {
         return [$this->low, $this->high];
     }
 
-
-
     /**
      * Function returns maximum between two comparable values
-     * @param interval1
-     * @param interval2
-     * @returns {Interval}
+     *
+     * @param Interval $interval1
+     * @param Interval $interval2
+     * @return Interval
      */
-    public static function comparableMax($interval1, $interval2) {
+    public static function comparableMax($interval1, $interval2): self
+    {
         return $interval1->merge($interval2);
     }
 
@@ -72,11 +74,13 @@ class Interval {
 
     /**
      * Predicate returns true if first value less than second value
-     * @param val1
-     * @param val2
-     * @returns {boolean}
+     *
+     * @param $val1
+     * @param $val2
+     * @return bool
      */
-    public static function comparableLessThan($val1, $val2) {
+    public static function comparableLessThan($val1, $val2): bool
+    {
         return $val1 < $val2;
     }
 }
