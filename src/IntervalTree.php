@@ -80,7 +80,7 @@ class IntervalTree
      */
     public function isEmpty()
     {
-        return ($this->root == null || $this->root == $this->nilNode);
+        return ($this->root === null || $this->root === $this->nilNode);
     }
 
     /**
@@ -196,7 +196,7 @@ class IntervalTree
     public function recalcMax($node)
     {
         $nodeCurrent = $node;
-        while ($nodeCurrent->parent != null) {
+        while ($nodeCurrent->parent !== null) {
             $nodeCurrent->parent->updateMax();
             $nodeCurrent = $nodeCurrent->parent;
         }
@@ -207,10 +207,10 @@ class IntervalTree
         $currentNode = $this->root;
         $parentNode = null;
 
-        if ($this->root == null || $this->root == $this->nilNode) {
+        if ($this->root === null || $this->root === $this->nilNode) {
             $this->root = $insertNode;
         } else {
-            while ($currentNode != $this->nilNode) {
+            while ($currentNode !== $this->nilNode) {
                 $parentNode = $currentNode;
                 if ($insertNode->lessThan($currentNode)) {
                     $currentNode = $currentNode->left;
@@ -235,21 +235,21 @@ class IntervalTree
     // Go upwords to the root and re-color until violation will be resolved
     public function insertFixup($insertNode)
     {
-        $currentNode;
-        $uncleNode;
+        $currentNode = null;
+        $uncleNode = null;
 
         $currentNode = $insertNode;
-        while ($currentNode != $this->root && $currentNode->parent->color == Node::COLOR_RED) {
-            if ($currentNode->parent == $currentNode->parent->parent->left) { // parent is left child of grandfather
+        while ($currentNode !== $this->root && $currentNode->parent->color === Node::COLOR_RED) {
+            if ($currentNode->parent === $currentNode->parent->parent->left) { // parent is left child of grandfather
                 $uncleNode = $currentNode->parent->parent->right; // right brother of parent
-                if ($uncleNode->color == Node::COLOR_RED) { // Case 1. Uncle is red
+                if ($uncleNode->color === Node::COLOR_RED) { // Case 1. Uncle is red
                     // re-color father and uncle into black
                     $currentNode->parent->color = Node::COLOR_BLACK;
                     $uncleNode->color = Node::COLOR_BLACK;
                     $currentNode->parent->parent->color = Node::COLOR_RED;
                     $currentNode = $currentNode->parent->parent;
                 } else { // Case 2 & 3. Uncle is black
-                    if ($currentNode == $currentNode->parent->right) { // Case 2. Current if right child
+                    if ($currentNode === $currentNode->parent->right) { // Case 2. Current if right child
                         // This case is transformed into Case 3.
                         $currentNode = $currentNode->parent;
                         $this->rotateLeft($currentNode);
@@ -261,14 +261,14 @@ class IntervalTree
                 }
             } else { // parent is right child of grandfather
                 $uncleNode = $currentNode->parent->parent->left; // left brother of parent
-                if ($uncleNode->color == Node::COLOR_RED) { // Case 4. Uncle is red
+                if ($uncleNode->color === Node::COLOR_RED) { // Case 4. Uncle is red
                     // re-color father and uncle into black
                     $currentNode->parent->color = Node::COLOR_BLACK;
                     $uncleNode->color = Node::COLOR_BLACK;
                     $currentNode->parent->parent->color = Node::COLOR_RED;
                     $currentNode = $currentNode->parent->parent;
                 } else {
-                    if ($currentNode == $currentNode->parent->left) { // Case 5. Current is left child
+                    if ($currentNode === $currentNode->parent->left) { // Case 5. Current is left child
                         // Transform into case 6
                         $currentNode = $currentNode->parent;
                         $this->rotateRight($currentNode);
@@ -289,28 +289,28 @@ class IntervalTree
         $cutNode; // node to be cut - either delete_node or successor_node  ("y" from 14.4)
         $fixNode; // node to fix rb tree property   ("x" from 14.4)
 
-        if ($deleteNode->left == $this->nilNode || $deleteNode->right == $this->nilNode) { // delete_node has less then 2 children
+        if ($deleteNode->left === $this->nilNode || $deleteNode->right === $this->nilNode) { // delete_node has less then 2 children
             $cutNode = $deleteNode;
         } else { // delete_node has 2 children
             $cutNode = $this->treeSuccessor($deleteNode);
         }
 
         // fix_node if single child of cut_node
-        if ($cutNode->left != $this->nilNode) {
+        if ($cutNode->left !== $this->nilNode) {
             $fixNode = $cutNode->left;
         } else {
             $fixNode = $cutNode->right;
         }
 
         // remove cut_node from parent
-        /*if (fix_node != this.nil_node) {*/
+        /*if (fix_node !== this.nil_node) {*/
         $fixNode->parent = $cutNode->parent;
         /*}*/
 
-        if ($cutNode == $this->root) {
+        if ($cutNode === $this->root) {
             $this->root = $fixNode;
         } else {
-            if ($cutNode == $cutNode->parent->left) {
+            if ($cutNode === $cutNode->parent->left) {
                 $cutNode->parent->left = $fixNode;
             } else {
                 $cutNode->parent->right = $fixNode;
@@ -323,13 +323,13 @@ class IntervalTree
         // COPY DATA !!!
         // Delete_node becomes cut_node, it means that we cannot hold reference
         // to node in outer structure and we will have to delete by key, additional search need
-        if ($cutNode != $deleteNode) {
+        if ($cutNode !== $deleteNode) {
             $deleteNode->copyData($cutNode);
             $deleteNode->updateMax(); // update max property of the cut node at the new place
             $this->recalcMax($deleteNode); // update max property upward from delete_node to root
         }
 
-        if ( /*fix_node != this.nil_node && */$cutNode->color == Node::COLOR_BLACK) {
+        if ( /*fix_node !== this.nil_node && */$cutNode->color === Node::COLOR_BLACK) {
             $this->deleteFixup($fixNode);
         }
     }
@@ -339,22 +339,22 @@ class IntervalTree
         $currentNode = $fixNode;
         $brotherNode;
 
-        while ($currentNode != $this->root && $currentNode->parent != null && $currentNode->color == Node::COLOR_BLACK) {
-            if ($currentNode == $currentNode->parent->left) { // fix node is left child
+        while ($currentNode !== $this->root && $currentNode->parent !== null && $currentNode->color === Node::COLOR_BLACK) {
+            if ($currentNode === $currentNode->parent->left) { // fix node is left child
                 $brotherNode = $currentNode->parent->right;
-                if ($brotherNode->color == Node::COLOR_RED) { // Case 1. Brother is red
+                if ($brotherNode->color === Node::COLOR_RED) { // Case 1. Brother is red
                     $brotherNode->color = Node::COLOR_BLACK; // re-color brother
                     $currentNode->parent->color = Node::COLOR_RED; // re-color father
                     $this->rotateLeft($currentNode->parent);
                     $brotherNode = $currentNode->parent->right; // update brother
                 }
                 // Derive to cases 2..4: brother is black
-                if ($brotherNode->left->color == Node::COLOR_BLACK &&
-                    $brotherNode->right->color == Node::COLOR_BLACK) { // case 2: both nephews black
+                if ($brotherNode->left->color === Node::COLOR_BLACK &&
+                    $brotherNode->right->color === Node::COLOR_BLACK) { // case 2: both nephews black
                     $brotherNode->color = Node::COLOR_RED; // re-color brother
                     $currentNode = $currentNode->parent; // continue iteration
                 } else {
-                    if ($brotherNode->right->color == Node::COLOR_BLACK) { // case 3: left nephew red, right nephew black
+                    if ($brotherNode->right->color === Node::COLOR_BLACK) { // case 3: left nephew red, right nephew black
                         $brotherNode->color = Node::COLOR_RED; // re-color brother
                         $brotherNode->left->color = Node::COLOR_BLACK; // re-color nephew
                         $this->rotateRight($brotherNode);
@@ -370,19 +370,19 @@ class IntervalTree
                 }
             } else { // fix node is right child
                 $brotherNode = $currentNode->parent->left;
-                if ($brotherNode->color == Node::COLOR_RED) { // Case 1. Brother is red
+                if ($brotherNode->color === Node::COLOR_RED) { // Case 1. Brother is red
                     $brotherNode->color = Node::COLOR_BLACK; // re-color brother
                     $currentNode->parent->color = Node::COLOR_RED; // re-color father
                     $this->rotateRight($currentNode->parent);
                     $brotherNode = $currentNode->parent->left; // update brother
                 }
                 // Go to cases 2..4
-                if ($brotherNode->left->color == Node::COLOR_BLACK &&
-                    $brotherNode->right->color == Node::COLOR_BLACK) { // case 2
+                if ($brotherNode->left->color === Node::COLOR_BLACK &&
+                    $brotherNode->right->color === Node::COLOR_BLACK) { // case 2
                     $brotherNode->color = Node::COLOR_RED; // re-color brother
                     $currentNode = $currentNode->parent; // continue iteration
                 } else {
-                    if ($brotherNode->left->color == Node::COLOR_BLACK) { // case 3: right nephew red, left nephew black
+                    if ($brotherNode->left->color === Node::COLOR_BLACK) { // case 3: right nephew red, left nephew black
                         $brotherNode->color = Node::COLOR_RED; // re-color brother
                         $brotherNode->right->color = Node::COLOR_BLACK; // re-color nephew
                         $this->rotateLeft($brotherNode);
@@ -404,7 +404,7 @@ class IntervalTree
 
     public function treeSearch($node, $searchNode)
     {
-        if ($node == null || $node == $this->nilNode) {
+        if ($node === null || $node === $this->nilNode) {
             return null;
         }
 
@@ -422,9 +422,9 @@ class IntervalTree
     // Search all intervals intersecting given one
     public function treeSearchInterval($node, $searchNode, &$res = [])
     {
-        if ($node != null && $node != $this->nilNode) {
-            // if (node->left != this.nil_node && node->left->max >= low) {
-            if ($node->left != $this->nilNode && !$node->notIntersectLeftSubtree($searchNode)) {
+        if ($node !== null && $node !== $this->nilNode) {
+            // if (node->left !== this.nil_node && node->left->max >= low) {
+            if ($node->left !== $this->nilNode && !$node->notIntersectLeftSubtree($searchNode)) {
                 yield from $this->treeSearchInterval($node->left, $searchNode, $res);
             }
             // if (low <= node->high && node->low <= high) {
@@ -432,8 +432,8 @@ class IntervalTree
                 $res[] = $node;
                 yield $node;
             }
-            // if (node->right != this.nil_node && node->low <= high) {
-            if ($node->right != $this->nilNode && !$node->notIntersectRightSubtree($searchNode)) {
+            // if (node->right !== this.nil_node && node->low <= high) {
+            if ($node->right !== $this->nilNode && !$node->notIntersectRightSubtree($searchNode)) {
                 yield from $this->treeSearchInterval($node->right, $searchNode, $res);
             }
         }
@@ -442,7 +442,7 @@ class IntervalTree
     public function localMinimum($node)
     {
         $nodeMin = $node;
-        while ($nodeMin->left != null && $nodeMin->left != $this->nilNode) {
+        while ($nodeMin->left !== null && $nodeMin->left !== $this->nilNode) {
             $nodeMin = $nodeMin->left;
         }
         return $nodeMin;
@@ -452,7 +452,7 @@ class IntervalTree
     public function localMaximum($node)
     {
         $nodeMax = $node;
-        while ($nodeMax->right != null && $nodeMax->right != $this->nilNode) {
+        while ($nodeMax->right !== null && $nodeMax->right !== $this->nilNode) {
             $nodeMax = $nodeMax->right;
         }
         return $nodeMax;
@@ -464,12 +464,12 @@ class IntervalTree
         $currentNode;
         $parentNode;
 
-        if ($node->right != $this->nilNode) {
+        if ($node->right !== $this->nilNode) {
             $nodeSuccessor = $this->localMinimum($node->right);
         } else {
             $currentNode = $node;
             $parentNode = $node->parent;
-            while ($parentNode != null && $parentNode->right == $currentNode) {
+            while ($parentNode !== null && $parentNode->right === $currentNode) {
                 $currentNode = $parentNode;
                 $parentNode = $parentNode->parent;
             }
@@ -491,15 +491,15 @@ class IntervalTree
 
         $x->right = $y->left; // b goes to x.right
 
-        if ($y->left != $this->nilNode) {
+        if ($y->left !== $this->nilNode) {
             $y->left->parent = $x; // x becomes parent of b
         }
         $y->parent = $x->parent; // move parent
 
-        if ($x == $this->root) {
+        if ($x === $this->root) {
             $this->root = $y; // y becomes root
         } else { // y becomes child of x.parent
-            if ($x == $x->parent->left) {
+            if ($x === $x->parent->left) {
                 $x->parent->left = $y;
             } else {
                 $x->parent->right = $y;
@@ -508,12 +508,12 @@ class IntervalTree
         $y->left = $x; // x becomes left child of y
         $x->parent = $y; // and y becomes parent of x
 
-        if ($x != null && $x != $this->nilNode) {
+        if ($x !== null && $x !== $this->nilNode) {
             $x->updateMax();
         }
 
         $y = $x->parent;
-        if ($y != null && $y != $this->nilNode) {
+        if ($y !== null && $y !== $this->nilNode) {
             $y->updateMax();
         }
     }
@@ -524,15 +524,15 @@ class IntervalTree
 
         $y->left = $x->right; // b goes to y.left
 
-        if ($x->right != $this->nilNode) {
+        if ($x->right !== $this->nilNode) {
             $x->right->parent = $y; // y becomes parent of b
         }
         $x->parent = $y->parent; // move parent
 
-        if ($y == $this->root) { // x becomes root
+        if ($y === $this->root) { // x becomes root
             $this->root = $x;
         } else { // y becomes child of x.parent
-            if ($y == $y->parent->left) {
+            if ($y === $y->parent->left) {
                 $y->parent->left = $x;
             } else {
                 $y->parent->right = $x;
@@ -541,19 +541,19 @@ class IntervalTree
         $x->right = $y; // y becomes right child of x
         $y->parent = $x; // and x becomes parent of y
 
-        if ($y != null && $y != $this->nilNode) {
+        if ($y !== null && $y !== $this->nilNode) {
             $y->updateMax();
         }
 
         $x = $y->parent;
-        if ($x != null && $x != $this->nilNode) {
+        if ($x !== null && $x !== $this->nilNode) {
             $y->updateMax();
         }
     }
 
     public function treeWalk($node, $action)
     {
-        if ($node != null && $node != $this->nilNode) {
+        if ($node !== null && $node !== $this->nilNode) {
             $this->treeWalk($node->left, $action);
             // arr.push(node.toArray());
             $action($node);
@@ -566,8 +566,8 @@ class IntervalTree
     {
         $res = true;
         $this->treeWalk($this->root, function ($node) use (&$res) {
-            if ($node->color == Node::COLOR_RED) {
-                if (!($node->left->color == Node::COLOR_BLACK && $node->right->color == Node::COLOR_BLACK)) {
+            if ($node->color === Node::COLOR_RED) {
+                if (!($node->left->color === Node::COLOR_BLACK && $node->right->color === Node::COLOR_BLACK)) {
                     $res = false;
                 }
             }
@@ -581,20 +581,20 @@ class IntervalTree
         $height = 0;
         $heightLeft = 0;
         $heightRight = 0;
-        if ($node->color == Node::COLOR_BLACK) {
+        if ($node->color === Node::COLOR_BLACK) {
             $height++;
         }
-        if ($node->left != $this->nilNode) {
+        if ($node->left !== $this->nilNode) {
             $heightLeft = $this->testBlackHeightProperty($node->left);
         } else {
             $heightLeft = 1;
         }
-        if ($node->right != $this->nilNode) {
+        if ($node->right !== $this->nilNode) {
             $heightRight = $this->testBlackHeightProperty($node->right);
         } else {
             $heightRight = 1;
         }
-        if ($heightLeft != $heightRight) {
+        if ($heightLeft !== $heightRight) {
             throw new Error('Red-black height property violated');
         }
         $height += $heightLeft;
