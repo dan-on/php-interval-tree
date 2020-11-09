@@ -1,4 +1,5 @@
 <?php
+
 namespace Danon\IntervalTree;
 
 use InvalidArgumentException;

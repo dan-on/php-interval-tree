@@ -1,5 +1,8 @@
 <?php
+
 namespace Danon\IntervalTree;
+
+use Iterator;
 
 class IntervalTree
 {
@@ -11,7 +14,6 @@ class IntervalTree
      */
     public function __construct()
     {
-        $this->root = null;
         $this->nilNode = new Node();
     }
 
@@ -88,9 +90,9 @@ class IntervalTree
      * Iterator of nodes which keys intersect with given interval
      * If no values stored in the tree, returns array of keys which intersect given interval
      * @param array $interval
-     * @return iterable
+     * @return Iterator
      */
-    public function iterateIntersections(array $interval): iterable
+    public function iterateIntersections(array $interval): Iterator
     {
         $searchNode = new Node($interval);
         yield from $this->treeSearchInterval($this->root, $searchNode);
@@ -179,7 +181,7 @@ class IntervalTree
      */
     public function foreach($visitor)
     {
-        $this->treeWalk($this->root, function ($node) {
+        $this->treeWalk($this->root, function ($node) use ($visitor) {
             return $visitor($node->item->key, $node->item->value);
         });
     }
@@ -237,7 +239,7 @@ class IntervalTree
     }
 
     // After insertion insert_node may have red-colored parent, and this is a single possible violation
-    // Go upwords to the root and re-color until violation will be resolved
+    // Go upwards to the root and re-color until violation will be resolved
     public function insertFixup($insertNode)
     {
         $currentNode = null;
@@ -291,8 +293,8 @@ class IntervalTree
 
     public function treeDelete($deleteNode)
     {
-        $cutNode; // node to be cut - either delete_node or successor_node  ("y" from 14.4)
-        $fixNode; // node to fix rb tree property   ("x" from 14.4)
+        $cutNode = null; // node to be cut - either delete_node or successor_node  ("y" from 14.4)
+        $fixNode = null; // node to fix rb tree property   ("x" from 14.4)
 
         if ($deleteNode->left === $this->nilNode || $deleteNode->right === $this->nilNode) { // delete_node has less then 2 children
             $cutNode = $deleteNode;
@@ -307,10 +309,7 @@ class IntervalTree
             $fixNode = $cutNode->right;
         }
 
-        // remove cut_node from parent
-        /*if (fix_node !== this.nil_node) {*/
         $fixNode->parent = $cutNode->parent;
-        /*}*/
 
         if ($cutNode === $this->root) {
             $this->root = $fixNode;
@@ -341,7 +340,6 @@ class IntervalTree
     public function deleteFixup($fixNode)
     {
         $currentNode = $fixNode;
-        $brotherNode;
 
         while ($currentNode !== $this->root && $currentNode->parent !== null && $currentNode->color === Node::COLOR_BLACK) {
             if ($currentNode === $currentNode->parent->left) { // fix node is left child
@@ -353,8 +351,10 @@ class IntervalTree
                     $brotherNode = $currentNode->parent->right; // update brother
                 }
                 // Derive to cases 2..4: brother is black
-                if ($brotherNode->left->color === Node::COLOR_BLACK &&
-                    $brotherNode->right->color === Node::COLOR_BLACK) { // case 2: both nephews black
+                if (
+                    $brotherNode->left->color === Node::COLOR_BLACK &&
+                    $brotherNode->right->color === Node::COLOR_BLACK
+                ) { // case 2: both nephews black
                     $brotherNode->color = Node::COLOR_RED; // re-color brother
                     $currentNode = $currentNode->parent; // continue iteration
                 } else {
@@ -381,8 +381,10 @@ class IntervalTree
                     $brotherNode = $currentNode->parent->left; // update brother
                 }
                 // Go to cases 2..4
-                if ($brotherNode->left->color === Node::COLOR_BLACK &&
-                    $brotherNode->right->color === Node::COLOR_BLACK) { // case 2
+                if (
+                    $brotherNode->left->color === Node::COLOR_BLACK &&
+                    $brotherNode->right->color === Node::COLOR_BLACK
+                ) { // case 2
                     $brotherNode->color = Node::COLOR_RED; // re-color brother
                     $currentNode = $currentNode->parent; // continue iteration
                 } else {
@@ -464,10 +466,6 @@ class IntervalTree
 
     public function treeSuccessor($node)
     {
-        $nodeSuccessor;
-        $currentNode;
-        $parentNode;
-
         if ($node->right !== $this->nilNode) {
             $nodeSuccessor = $this->localMinimum($node->right);
         } else {
@@ -599,7 +597,7 @@ class IntervalTree
             $heightRight = 1;
         }
         if ($heightLeft !== $heightRight) {
-            throw new Error('Red-black height property violated');
+            throw new \Exception('Red-black height property violated');
         }
         $height += $heightLeft;
         return $height;
