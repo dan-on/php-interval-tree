@@ -45,13 +45,8 @@ class Node
 
     public $max;
 
-    public function __construct($key = null, $value = null, $left = null, $right = null, $parent = null, $color = self::COLOR_BLACK)
+    public function __construct($key = null, $value = null)
     {
-        $this->left = $left;
-        $this->right = $right;
-        $this->parent = $parent;
-        $this->color = $color;
-
         if (is_null($key)) {
             $this->item = new Item($key, $value); // key is supposed to be instance of Interval
         } elseif ($key && is_array($key) && count($key) === 2) {

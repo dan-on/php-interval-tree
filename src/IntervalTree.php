@@ -139,7 +139,12 @@ class IntervalTree
             $value = $key;
         }
 
-        $insertNode = new Node($key, $value, $this->nilNode, $this->nilNode, null, Node::COLOR_RED);
+        $insertNode = new Node($key, $value);
+        $insertNode->left = $this->nilNode;
+        $insertNode->right = $this->nilNode;
+        $insertNode->parent = null;
+        $insertNode->color = Node::COLOR_RED;
+        
         $this->treeInsert($insertNode);
         $this->recalcMax($insertNode);
         return $insertNode;
