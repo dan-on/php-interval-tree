@@ -1,4 +1,5 @@
 <?php
+
 namespace Danon\IntervalTree;
 
 class Node
@@ -46,17 +47,16 @@ class Node
 
     public function __construct($key = null, $value = null, $left = null, $right = null, $parent = null, $color = self::COLOR_BLACK)
     {
-
         $this->left = $left;
         $this->right = $right;
         $this->parent = $parent;
         $this->color = $color;
 
-        $this->item = (object) compact('key', 'value'); // key is supposed to be instance of Interval
-
-        /* If not, this should by an array of two numbers */
-        if ($key && is_array($key) && count($key) === 2) {
-            $this->item->key = new Interval(min($key), max($key));
+        if (is_null($key)) {
+            $this->item = new Item($key, $value); // key is supposed to be instance of Interval
+        } elseif ($key && is_array($key) && count($key) === 2) {
+            $item = new Item(new Interval(min($key), max($key)), $value);
+            $this->item = $item;
         }
 
         $this->max = $this->item->key ? clone $this->item->key : null;
@@ -88,7 +88,7 @@ class Node
         $valueEqual = true;
         if ($this->item->value && $otherNode->item->value) {
             $valueEqual = $this->item->value ? $this->item->value->equalTo($otherNode->item->value) :
-            $this->item->value == $otherNode->item->value;
+                $this->item->value == $otherNode->item->value;
         }
         return $this->item->key->equalTo($otherNode->item->key) && $valueEqual;
     }
