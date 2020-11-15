@@ -125,20 +125,12 @@ class IntervalTree
     /**
      * Insert new item into interval tree
      *
-     * @param array $key - array of two numbers [low, high]
-     * @param mixed $value - value representing any object (optional)
-     * @return Node - returns reference to inserted node
+     * @param array $key array of two numbers [low, high]
+     * @param mixed $value value representing any object (optional)
+     * @return Node returns reference to inserted node
      */
     public function insert(array $key, $value = null)
     {
-        if ($key === null) {
-            return;
-        }
-
-        if ($value === null) {
-            $value = $key;
-        }
-
         $insertNode = new Node($key, $value);
         $insertNode->left = $this->nilNode;
         $insertNode->right = $this->nilNode;
@@ -146,66 +138,30 @@ class IntervalTree
         $insertNode->color = Node::COLOR_RED;
         
         $this->treeInsert($insertNode);
-        $this->recalcMax($insertNode);
+        $this->recalculateMax($insertNode);
         return $insertNode;
     }
 
-    /**
-     * Returns true if item {key,value} exist in the tree
-     * 
-     * @param key - interval correspondent to keys stored in the tree
-     * @param value - value object to be checked
-     * @return bool - true if item {key, value} exist in the tree, false otherwise
-     */
-    public function exist($key, $value): bool
-    {
-        $searchNode = new Node($key, $value);
-        return $this->treeSearch($this->root, $searchNode) ? true : false;
-    }
 
     /**
-     * Remove entry {key, value} from the tree
-     * @param key - interval correspondent to keys stored in the tree
-     * @param value - - value object
-     * @return bool - true if item {key, value} deleted, false if not found
+     * Remove node by key and value from the tree
+     * @param Interval $key interval correspondent to keys stored in the tree
+     * @param mixed $value value object
+     * @return bool true if item {key, value} deleted, false if not found
      */
-    public function remove($key, $value): bool
+    public function remove(Interval $key, $value): bool
     {
         $searchNode = new Node($key, $value);
         $deleteNode = $this->treeSearch($this->root, $searchNode);
         if ($deleteNode) {
             $this->treeDelete($deleteNode);
+            return true;
         }
-        return $deleteNode;
+
+        return false;
     }
 
-    /**
-     * Tree visitor. For each node implement a callback function. <br/>
-     * Method calls a callback function with two parameters (key, value)
-     * @param visitor(key,value) - function to be called for each tree item
-     */
-    public function foreach($visitor)
-    {
-        $this->treeWalk($this->root, function ($node) use ($visitor) {
-            return $visitor($node->item->key, $node->item->value);
-        });
-    }
-
-    /** 
-     * Value Mapper. Walk through every node and map node value to another value
-     * 
-     * @param callback(value, key) - function to be called for each tree item
-     */
-    public function map($callback)
-    {
-        $tree = new IntervalTree();
-        $this->treeWalk($this->root, function ($node) use (&$tree, $callback) {
-            return $tree->insert($node->item->key, $callback($node->item->value, $node->item->key));
-        });
-        return $tree;
-    }
-
-    public function recalcMax($node)
+    public function recalculateMax(Node $node)
     {
         $nodeCurrent = $node;
         while ($nodeCurrent->parent !== null) {
@@ -327,14 +283,14 @@ class IntervalTree
             $cutNode->parent->updateMax(); // update max property of the parent
         }
 
-        $this->recalcMax($fixNode); // update max property upward from fix_node to root
+        $this->recalculateMax($fixNode); // update max property upward from fix_node to root
 
         // deleteNode becomes cutNode, it means that we cannot hold reference
         // to node in outer structure and we will have to delete by key, additional search need
         if ($cutNode !== $deleteNode) {
             $deleteNode->copyData($cutNode);
             $deleteNode->updateMax(); // update max property of the cut node at the new place
-            $this->recalcMax($deleteNode); // update max property upward from deleteNode to root
+            $this->recalculateMax($deleteNode); // update max property upward from deleteNode to root
         }
 
         if ( /*fix_node !== this.nil_node && */$cutNode->color === Node::COLOR_BLACK) {
@@ -450,7 +406,7 @@ class IntervalTree
         }
     }
 
-    public function localMinimum($node)
+    public function localMinimum(Node $node): Node
     {
         $nodeMin = $node;
         while ($nodeMin->left !== null && $nodeMin->left !== $this->nilNode) {
@@ -459,17 +415,7 @@ class IntervalTree
         return $nodeMin;
     }
 
-    // not in use
-    public function localMaximum($node)
-    {
-        $nodeMax = $node;
-        while ($nodeMax->right !== null && $nodeMax->right !== $this->nilNode) {
-            $nodeMax = $nodeMax->right;
-        }
-        return $nodeMax;
-    }
-
-    public function treeSuccessor($node)
+    private function treeSuccessor(Node $node)
     {
         if ($node->right !== $this->nilNode) {
             $nodeSuccessor = $this->localMinimum($node->right);
@@ -485,14 +431,13 @@ class IntervalTree
         return $nodeSuccessor;
     }
 
-    //           |            right-rotate(T,y)       |
-    //           y            ---------------.       x
-    //          / \                                  / \
-    //         x   c          left-rotate(T,x)      a   y
-    //        / \             <---------------         / \
-    //       a   b                                    b   c
 
-    public function rotateLeft($x)
+    /**
+     * General left rotation
+     *
+     * @param Node $x top or rotated subtree
+     */
+    private function rotateLeft(Node $x)
     {
         $y = $x->right;
 
@@ -525,7 +470,12 @@ class IntervalTree
         }
     }
 
-    public function rotateRight($y)
+    /**
+     * General right rotation
+     *
+     * @param Node $y top of rotated subtree
+     */
+    private function rotateRight(Node $y)
     {
         $x = $y->left;
 
@@ -566,45 +516,5 @@ class IntervalTree
             $action($node);
             $this->treeWalk($node->right, $action);
         }
-    }
-
-    /* Return true if all red nodes have exactly two black child nodes */
-    public function testRedBlackProperty()
-    {
-        $res = true;
-        $this->treeWalk($this->root, function ($node) use (&$res) {
-            if ($node->color === Node::COLOR_RED) {
-                if (!($node->left->color === Node::COLOR_BLACK && $node->right->color === Node::COLOR_BLACK)) {
-                    $res = false;
-                }
-            }
-        });
-        return $res;
-    }
-
-    /* Throw error if not every path from root to bottom has same black height */
-    public function testBlackHeightProperty($node)
-    {
-        $height = 0;
-        $heightLeft = 0;
-        $heightRight = 0;
-        if ($node->color === Node::COLOR_BLACK) {
-            $height++;
-        }
-        if ($node->left !== $this->nilNode) {
-            $heightLeft = $this->testBlackHeightProperty($node->left);
-        } else {
-            $heightLeft = 1;
-        }
-        if ($node->right !== $this->nilNode) {
-            $heightRight = $this->testBlackHeightProperty($node->right);
-        } else {
-            $heightRight = 1;
-        }
-        if ($heightLeft !== $heightRight) {
-            throw new \Exception('Red-black height property violated');
-        }
-        $height += $heightLeft;
-        return $height;
     }
 };
