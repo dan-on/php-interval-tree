@@ -179,18 +179,6 @@ class IntervalTree
         return $deleteNode;
     }
 
-    /**
-     * Tree visitor. For each node implement a callback function. <br/>
-     * Method calls a callback function with two parameters (key, value)
-     * @param visitor(key,value) - function to be called for each tree item
-     */
-    public function foreach($visitor)
-    {
-        $this->treeWalk($this->root, function ($node) use ($visitor) {
-            return $visitor($node->item->key, $node->item->value);
-        });
-    }
-
     /** 
      * Value Mapper. Walk through every node and map node value to another value
      * 
