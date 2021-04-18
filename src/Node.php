@@ -26,7 +26,7 @@ class Node
      * 
      * @var Node
      */
-    public $parent;
+    private $parent;
 
     /**
      * Color of node (BLACK or RED)
@@ -65,7 +65,7 @@ class Node
     {
         $this->left = $node;
     }
-    
+
     public function getRight(): Node
     {
         return $this->right;
@@ -74,6 +74,16 @@ class Node
     public function setRight(Node $node): void
     {
         $this->right = $node;
+    }
+
+    public function getParent(): ?Node
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?Node $node): void
+    {
+        $this->parent = $node;
     }
 
 
