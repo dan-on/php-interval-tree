@@ -41,7 +41,7 @@ class IntervalTree
         $res = [];
 
         $this->treeWalk($this->root, function ($node) use (&$res) {
-            $res[] = ($node->item->key ? $node->item->key->output() : $node->item->key);
+            $res[] = ($node->item->getKey() ? $node->item->getKey()->output() : $node->item->getKey());
         });
         return $res;
     }

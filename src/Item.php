@@ -4,8 +4,8 @@ namespace Danon\IntervalTree;
 
 class Item
 {
-    public $key;
-    public $value;
+    private $key;
+    private $value;
 
     public function __construct(?Interval $key, $value)
     {
