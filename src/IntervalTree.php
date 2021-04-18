@@ -123,14 +123,14 @@ class IntervalTree
     /**
      * Returns true if item {key,value} exist in the tree
      * 
-     * @param key - interval correspondent to keys stored in the tree
-     * @param value - value object to be checked
-     * @return bool - true if item {key, value} exist in the tree, false otherwise
+     * @param Interval $key interval correspondent to keys stored in the tree
+     * @param mixed $value value object to be checked
+     * @return bool true if item {key, value} exist in the tree, false otherwise
      */
-    public function exist($key, $value): bool
+    public function exist(Interval $key, $value): bool
     {
         $searchNode = new Node($key, $value);
-        return $this->treeSearch($this->root, $searchNode) ? true : false;
+        return (bool)$this->treeSearch($this->root, $searchNode);
     }
 
     /**
