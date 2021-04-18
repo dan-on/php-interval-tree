@@ -4,7 +4,6 @@ namespace Danon\IntervalTree;
 
 class Node
 {
-
     public const COLOR_RED = 0;
     public const COLOR_BLACK = 1;
 
@@ -13,14 +12,14 @@ class Node
      *
      * @var Node
      */
-    public $left;
+    private $left;
 
     /**
      * Reference to right child node
      *
      * @var Node
      */
-    public $right;
+    private $right;
 
     /**
      * Reference to parent node
@@ -56,6 +55,27 @@ class Node
 
         $this->max = $this->item->getKey() ? clone $this->item->getKey() : null;
     }
+
+    public function getLeft(): Node
+    {
+        return $this->left;
+    }
+
+    public function setLeft(Node $node): void
+    {
+        $this->left = $node;
+    }
+    
+    public function getRight(): Node
+    {
+        return $this->right;
+    }
+
+    public function setRight(Node $node): void
+    {
+        $this->right = $node;
+    }
+
 
     public function getValue()
     {
