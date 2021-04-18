@@ -51,7 +51,7 @@ class IntervalTree
      *
      * @return boolean
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return ($this->root === null || $this->root === $this->nilNode);
     }
