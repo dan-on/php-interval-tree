@@ -34,7 +34,7 @@ class IntervalTree
     /**
      * Returns array of sorted keys in the ascending order
      *
-     * @return void
+     * @return array
      */
     public function getKeys(): array
     {
