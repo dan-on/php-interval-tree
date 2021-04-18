@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace Danon\IntervalTree;
 
-class Item
+final class Item
 {
     private $key;
     private $value;
@@ -18,7 +19,7 @@ class Item
         return $this->key;
     }
 
-    
+
     public function getValue()
     {
         return $this->value;
