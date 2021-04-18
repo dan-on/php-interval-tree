@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Danon\IntervalTree;
 
 use InvalidArgumentException;
 
-class Interval
+final class Interval
 {
     public $low;
     public $high;
@@ -19,28 +20,28 @@ class Interval
         $this->high = $high;
     }
 
-    public function lessThan(Interval $otherInterval)
+    public function lessThan(Interval $otherInterval): bool
     {
         return $this->low < $otherInterval->low ||
-            $this->low == $otherInterval->low && $this->high < $otherInterval->high;
+            ($this->low === $otherInterval->low && $this->high < $otherInterval->high);
     }
 
-    public function equalTo(Interval $otherInterval)
+    public function equalTo(Interval $otherInterval): bool
     {
-        return $this->low == $otherInterval->low && $this->high == $otherInterval->high;
+        return $this->low === $otherInterval->low && $this->high === $otherInterval->high;
     }
 
-    public function intersect(Interval $otherInterval)
+    public function intersect(Interval $otherInterval): bool
     {
         return !$this->notIntersect($otherInterval);
     }
 
-    public function notIntersect(Interval $otherInterval)
+    public function notIntersect(Interval $otherInterval): bool
     {
         return ($this->high < $otherInterval->low || $otherInterval->high < $this->low);
     }
 
-    public function merge(Interval $otherInterval)
+    public function merge(Interval $otherInterval): Interval
     {
         return new Interval(
             $this->low === null ? $otherInterval->low : min($this->low, $otherInterval->low),
@@ -51,7 +52,7 @@ class Interval
     /**
      * Returns how key should return
      */
-    public function output()
+    public function output(): array
     {
         return [$this->low, $this->high];
     }
@@ -63,12 +64,12 @@ class Interval
      * @param Interval $interval2
      * @return Interval
      */
-    public static function comparableMax($interval1, $interval2): self
+    public static function comparableMax(Interval $interval1, Interval $interval2): self
     {
         return $interval1->merge($interval2);
     }
 
-    public function getMax()
+    public function getMax(): Interval
     {
         return clone $this;
     }
