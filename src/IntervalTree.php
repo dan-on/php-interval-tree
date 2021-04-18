@@ -296,22 +296,22 @@ class IntervalTree
         $this->root->color = Node::COLOR_BLACK;
     }
 
-    public function treeDelete($deleteNode)
+    public function treeDelete(Node $deleteNode)
     {
         $cutNode = null; // node to be cut - either delete_node or successor_node  ("y" from 14.4)
         $fixNode = null; // node to fix rb tree property   ("x" from 14.4)
 
-        if ($deleteNode->left === $this->nilNode || $deleteNode->right === $this->nilNode) { // delete_node has less then 2 children
+        if ($deleteNode->getLeft() === $this->nilNode || $deleteNode->getRight() === $this->nilNode) { // delete_node has less then 2 children
             $cutNode = $deleteNode;
         } else { // delete_node has 2 children
             $cutNode = $this->treeSuccessor($deleteNode);
         }
 
         // fix_node if single child of cut_node
-        if ($cutNode->left !== $this->nilNode) {
-            $fixNode = $cutNode->left;
+        if ($cutNode->getLeft() !== $this->nilNode) {
+            $fixNode = $cutNode->getLeft();
         } else {
-            $fixNode = $cutNode->right;
+            $fixNode = $cutNode->getRight();
         }
 
         $fixNode->parent = $cutNode->parent;
@@ -319,10 +319,10 @@ class IntervalTree
         if ($cutNode === $this->root) {
             $this->root = $fixNode;
         } else {
-            if ($cutNode === $cutNode->parent->left) {
-                $cutNode->parent->left = $fixNode;
+            if ($cutNode === $cutNode->parent->getLeft()) {
+                $cutNode->parent->setLeft($fixNode);
             } else {
-                $cutNode->parent->right = $fixNode;
+                $cutNode->parent->setRight($fixNode);
             }
             $cutNode->parent->updateMax(); // update max property of the parent
         }
@@ -431,7 +431,7 @@ class IntervalTree
 
     // Original search_interval method; container res support push() insertion
     // Search all intervals intersecting given one
-    public function treeSearchInterval($node, $searchNode, &$res = [])
+    public function treeSearchInterval(Node $node, $searchNode, &$res = [])
     {
         if ($node !== null && $node !== $this->nilNode) {
             // if (node->left !== this.nil_node && node->left->max >= low) {
@@ -450,11 +450,11 @@ class IntervalTree
         }
     }
 
-    public function localMinimum($node)
+    public function localMinimum(Node $node)
     {
         $nodeMin = $node;
-        while ($nodeMin->left !== null && $nodeMin->left !== $this->nilNode) {
-            $nodeMin = $nodeMin->left;
+        while ($nodeMin->getLeft() !== null && $nodeMin->getLeft() !== $this->nilNode) {
+            $nodeMin = $nodeMin->getLeft();
         }
         return $nodeMin;
     }
@@ -492,7 +492,7 @@ class IntervalTree
     //        / \             <---------------         / \
     //       a   b                                    b   c
 
-    public function rotateLeft($x)
+    public function rotateLeft(Node $x)
     {
         $y = $x->getRight();
 
@@ -525,7 +525,7 @@ class IntervalTree
         }
     }
 
-    public function rotateRight($y)
+    public function rotateRight(Node $y)
     {
         $x = $y->getLeft();
 
@@ -558,7 +558,7 @@ class IntervalTree
         }
     }
 
-    public function treeWalk($node, $action)
+    public function treeWalk(Node $node, $action)
     {
         if ($node !== null && $node !== $this->nilNode) {
             $this->treeWalk($node->getLeft(), $action);
