@@ -84,7 +84,7 @@ class IntervalTree
      * Count intervals that has intersections
      *
      * @param array $interval
-     * @return boolean
+     * @return int
      */
     public function countIntersections($interval): int
     {
