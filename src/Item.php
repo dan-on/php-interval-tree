@@ -13,13 +13,13 @@ class Item
         $this->value = $value;
     }
 
-    function getKey(): Interval
+    public function getKey(): ?Interval
     {
         return $this->key;
     }
 
     
-    function getValue()
+    public function getValue()
     {
         return $this->value;
     }

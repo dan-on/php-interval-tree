@@ -7,8 +7,8 @@ use InvalidArgumentException;
 
 final class Interval
 {
-    public $low;
-    public $high;
+    private $low;
+    private $high;
 
     public function __construct(int $low, int $high)
     {
@@ -20,15 +20,25 @@ final class Interval
         $this->high = $high;
     }
 
+    public function getLow(): int
+    {
+        return $this->low;
+    }
+
+    public function getHigh(): int
+    {
+        return $this->high;
+    }
+
     public function lessThan(Interval $otherInterval): bool
     {
-        return $this->low < $otherInterval->low ||
-            ($this->low === $otherInterval->low && $this->high < $otherInterval->high);
+        return $this->getLow() < $otherInterval->getLow() ||
+            ($this->getLow() === $otherInterval->getLow() && $this->getHigh() < $otherInterval->getHigh());
     }
 
     public function equalTo(Interval $otherInterval): bool
     {
-        return $this->low === $otherInterval->low && $this->high === $otherInterval->high;
+        return $this->getLow() === $otherInterval->getLow() && $this->getHigh() === $otherInterval->getHigh();
     }
 
     public function intersect(Interval $otherInterval): bool
@@ -38,14 +48,14 @@ final class Interval
 
     public function notIntersect(Interval $otherInterval): bool
     {
-        return ($this->high < $otherInterval->low || $otherInterval->high < $this->low);
+        return ($this->getHigh() < $otherInterval->getLow() || $otherInterval->getHigh() < $this->getLow());
     }
 
     public function merge(Interval $otherInterval): Interval
     {
         return new Interval(
-            $this->low === null ? $otherInterval->low : min($this->low, $otherInterval->low),
-            $this->high === null ? $otherInterval->high : max($this->high, $otherInterval->high)
+            min($this->getLow(), $otherInterval->getLow()),
+            max($this->getHigh(), $otherInterval->getHigh())
         );
     }
 
@@ -54,7 +64,7 @@ final class Interval
      */
     public function output(): array
     {
-        return [$this->low, $this->high];
+        return [$this->getLow(), $this->getHigh()];
     }
 
     /**

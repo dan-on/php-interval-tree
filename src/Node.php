@@ -115,15 +115,15 @@ class Node
     public function notIntersectLeftSubtree($searchNode)
     {
         //const comparable_less_than = this.item.key.constructor.comparable_less_than;  // static method
-        $high = $this->left->max->high !== null ? $this->left->max->high : $this->left->max;
-        return Interval::comparableLessThan($high, $searchNode->item->key->low);
+        $high = $this->left->max->getHigh() !== null ? $this->left->max->getHigh() : $this->left->max;
+        return Interval::comparableLessThan($high, $searchNode->item->key->getLow());
     }
 
     // Other_node does not intersect right subtree if other_node.item.key.high < this.right.key.low
     public function notIntersectRightSubtree($searchNode)
     {
         //const comparable_less_than = this.item.key.constructor.comparable_less_than;  // static method
-        $low = $this->right->max->low !== null ? $this->right->max->low : $this->right->item->key->low;
-        return Interval::comparableLessThan($searchNode->item->key->high, $low);
+        $low = $this->right->max->getLow() !== null ? $this->right->max->getLow() : $this->right->item->key->getLow();
+        return Interval::comparableLessThan($searchNode->item->key->getHigh(), $low);
     }
 }
