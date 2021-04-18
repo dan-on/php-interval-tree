@@ -47,36 +47,6 @@ class IntervalTree
     }
 
     /**
-     * Return array of values in the ascending keys order
-     * @return array
-     */
-    public function getValues(): array
-    {
-        $res = [];
-        $this->treeWalk($this->root, function ($node) use (&$res) {
-            $res[] = $node->item->value;
-        });
-        return $res;
-    }
-
-    /**
-     * Returns array of items (<key,value> pairs) in the ascended keys order
-     *
-     * @return array
-     */
-    public function getItems(): array
-    {
-        $res = [];
-        $this->treeWalk($this->root, function ($node) use (&$res) {
-            $res[] = (object) [
-                'key' => $node->item->key ? $node->item->key->output() : $node->item->key,
-                'value' => $node->item->value,
-            ];
-        });
-        return $res;
-    }
-
-    /**
      * Returns true if tree is empty
      *
      * @return boolean
@@ -177,20 +147,6 @@ class IntervalTree
             $this->treeDelete($deleteNode);
         }
         return $deleteNode;
-    }
-
-    /** 
-     * Value Mapper. Walk through every node and map node value to another value
-     * 
-     * @param callback(value, key) - function to be called for each tree item
-     */
-    public function map($callback)
-    {
-        $tree = new IntervalTree();
-        $this->treeWalk($this->root, function ($node) use (&$tree, $callback) {
-            return $tree->insert($node->item->key, $callback($node->item->value, $node->item->key));
-        });
-        return $tree;
     }
 
     public function recalcMax($node)
