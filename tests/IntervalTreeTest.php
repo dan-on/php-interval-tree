@@ -79,4 +79,14 @@ final class IntervalTreeTest extends TestCase
 
         $this->assertEquals(count($tree->getKeys()), 250);
     }
+
+    public function testRemove(): void
+    {
+        $tree = new IntervalTree();
+        $tree->insert([1,2]);
+        $tree->insert([2,3]);
+        self::assertEquals(2, $tree->getSize());
+        $tree->remove([2,3], null);
+        self::assertEquals(1, $tree->getSize());
+    }
 }

@@ -146,7 +146,7 @@ class IntervalTree
         if ($deleteNode) {
             $this->treeDelete($deleteNode);
         }
-        return $deleteNode;
+        return true;
     }
 
     public function recalcMax($node)
