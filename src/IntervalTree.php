@@ -382,16 +382,6 @@ class IntervalTree
         return $nodeMin;
     }
 
-    // not in use
-    public function localMaximum($node)
-    {
-        $nodeMax = $node;
-        while ($nodeMax->getRight() !== null && $nodeMax->getRight() !== $this->nilNode) {
-            $nodeMax = $nodeMax->getRight();
-        }
-        return $nodeMax;
-    }
-
     public function treeSuccessor($node)
     {
         if ($node->getRight() !== $this->nilNode) {
