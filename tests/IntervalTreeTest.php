@@ -57,17 +57,6 @@ final class IntervalTreeTest extends TestCase
         $this->assertEquals($tree->countIntersections([0, 1]), 2);
     }
 
-    public function testGetKeys(): void
-    {
-        $intervals = [[6, 8], [1, 4], [2, 3], [5, 12], [1, 1], [3, 5], [5, 7]];
-        $tree = new IntervalTree();
-        for ($i = 0; $i < count($intervals); $i++) {
-            $tree->insert($intervals[$i], $i);
-        }
-
-        $this->assertEquals($tree->getKeys(), [[1, 1], [1, 4], [2, 3], [3, 5], [5, 7], [5, 12], [6, 8]]);
-    }
-
     public function testInsertManyIntervals(): void
     {
         $tree = new IntervalTree();
@@ -77,7 +66,7 @@ final class IntervalTreeTest extends TestCase
             $tree->insert([$low, $high], $i);
         }
 
-        $this->assertEquals(count($tree->getKeys()), 250);
+        $this->assertEquals($tree->getSize(), 250);
     }
 
     public function testRemove(): void

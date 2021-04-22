@@ -37,10 +37,6 @@ $tree->hasIntersection([2, 3]);
 // Count intervals that has intersections
 $tree->countIntersections([2, 3]);
 // Expected value: 3
-
-// Get array of keys sorted in ascendant order
-$sortedIntervals = $tree->getKeys(); 
-// Expected array: [[1, 1], [1, 4], [2, 3], [3, 5], [5, 7], [5, 12], [6, 8]]
 ```
 
 ## Tests

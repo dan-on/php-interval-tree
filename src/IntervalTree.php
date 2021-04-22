@@ -32,21 +32,6 @@ class IntervalTree
     }
 
     /**
-     * Returns array of sorted keys in the ascending order
-     *
-     * @return array
-     */
-    public function getKeys(): array
-    {
-        $res = [];
-
-        $this->treeWalk($this->root, function ($node) use (&$res) {
-            $res[] = ($node->item->getKey() ? $node->item->getKey()->output() : $node->item->getKey());
-        });
-        return $res;
-    }
-
-    /**
      * Returns true if tree is empty
      *
      * @return boolean
