@@ -20,6 +20,14 @@ final class Interval
         $this->high = $high;
     }
 
+    public static function fromArray(array $interval): self
+    {
+        if(count($interval) !== 2) {
+            throw new InvalidArgumentException('Wrong interval array');
+        }
+        return new self($interval[0], $interval[1]);
+    }
+
     public function getLow(): int
     {
         return $this->low;
