@@ -176,9 +176,6 @@ class IntervalTree
     // Go upwards to the root and re-color until violation will be resolved
     public function insertFixup($insertNode)
     {
-        $currentNode = null;
-        $uncleNode = null;
-
         $currentNode = $insertNode;
         while ($currentNode !== $this->root && $currentNode->getParent()->color === Node::COLOR_RED) {
             if ($currentNode->getParent() === $currentNode->getParent()->getParent()->getLeft()) { // parent is left child of grandfather
