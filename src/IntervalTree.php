@@ -224,9 +224,6 @@ class IntervalTree
 
     public function treeDelete(Node $deleteNode)
     {
-        $cutNode = null; // node to be cut - either delete_node or successor_node  ("y" from 14.4)
-        $fixNode = null; // node to fix rb tree property   ("x" from 14.4)
-
         if ($deleteNode->getLeft() === $this->nilNode || $deleteNode->getRight() === $this->nilNode) { // delete_node has less then 2 children
             $cutNode = $deleteNode;
         } else { // delete_node has 2 children
