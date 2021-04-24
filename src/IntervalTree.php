@@ -2,6 +2,7 @@
 
 namespace Danon\IntervalTree;
 
+use Generator;
 use Iterator;
 
 class IntervalTree
@@ -71,7 +72,7 @@ class IntervalTree
      * @param array $interval
      * @return int
      */
-    public function countIntersections($interval): int
+    public function countIntersections(array $interval): int
     {
         $nodesIterator = $this->iterateIntersections($interval);
         return iterator_count($nodesIterator);
@@ -84,7 +85,7 @@ class IntervalTree
      * @param mixed $value - value representing any object (optional)
      * @return Node - returns reference to inserted node
      */
-    public function insert(array $key, $value = null)
+    public function insert(array $key, $value = null): Node
     {
         $insertNode = new Node($key, $value);
         $insertNode->setLeft($this->nilNode);
@@ -126,7 +127,7 @@ class IntervalTree
         return true;
     }
 
-    public function recalcMax($node)
+    public function recalcMax($node): void
     {
         $nodeCurrent = $node;
         while ($nodeCurrent->getParent() !== null) {
@@ -135,7 +136,7 @@ class IntervalTree
         }
     }
 
-    public function treeInsert($insertNode)
+    public function treeInsert($insertNode): void
     {
         $currentNode = $this->root;
         $parentNode = null;
@@ -166,7 +167,7 @@ class IntervalTree
 
     // After insertion insert_node may have red-colored parent, and this is a single possible violation
     // Go upwards to the root and re-color until violation will be resolved
-    public function insertFixup($insertNode)
+    public function insertFixup($insertNode): void
     {
         $currentNode = $insertNode;
         while ($currentNode !== $this->root && $currentNode->getParent()->color === Node::COLOR_RED) {
@@ -214,7 +215,7 @@ class IntervalTree
         $this->root->color = Node::COLOR_BLACK;
     }
 
-    public function treeDelete(Node $deleteNode)
+    public function treeDelete(Node $deleteNode): void
     {
         if ($deleteNode->getLeft() === $this->nilNode || $deleteNode->getRight() === $this->nilNode) { // delete_node has less then 2 children
             $cutNode = $deleteNode;
@@ -257,7 +258,7 @@ class IntervalTree
         }
     }
 
-    public function deleteFixup($fixNode)
+    public function deleteFixup($fixNode): void
     {
         $currentNode = $fixNode;
 
@@ -337,31 +338,30 @@ class IntervalTree
         if ($searchNode->equalTo($node)) {
             return $node;
         }
+
         if ($searchNode->lessThan($node)) {
             return $this->treeSearch($node->getLeft(), $searchNode);
-        } else {
-            return $this->treeSearch($node->getRight(), $searchNode);
         }
+
+        return $this->treeSearch($node->getRight(), $searchNode);
     }
 
     // Original search_interval method; container res support push() insertion
     // Search all intervals intersecting given one
-    public function treeSearchInterval(Node $node, $searchNode, &$res = [])
+    public function treeSearchInterval(Node $node, $searchNode, &$res = []): Generator
     {
-        if ($node !== null && $node !== $this->nilNode) {
-            // if ($node->getLeft() !== $this->nilNode && $node->getLeft()->max >= $low) {
-            if ($node->getLeft() !== $this->nilNode && !$node->notIntersectLeftSubtree($searchNode)) {
-                yield from $this->treeSearchInterval($node->getLeft(), $searchNode, $res);
-            }
-            // if ($low <= $node->getHigh() && $node->getLow() <= $high) {
-            if ($node->intersect($searchNode)) {
-                $res[] = $node;
-                yield $node;
-            }
-            // if ($node->getRight() !== $this->nilNode && $node->getLow() <= $high) {
-            if ($node->getRight() !== $this->nilNode && !$node->notIntersectRightSubtree($searchNode)) {
-                yield from $this->treeSearchInterval($node->getRight(), $searchNode, $res);
-            }
+        // if ($node->getLeft() !== $this->nilNode && $node->getLeft()->max >= $low) {
+        if ($node->getLeft() !== $this->nilNode && !$node->notIntersectLeftSubtree($searchNode)) {
+            yield from $this->treeSearchInterval($node->getLeft(), $searchNode, $res);
+        }
+        // if ($low <= $node->getHigh() && $node->getLow() <= $high) {
+        if ($node->intersect($searchNode)) {
+            $res[] = $node;
+            yield $node;
+        }
+        // if ($node->getRight() !== $this->nilNode && $node->getLow() <= $high) {
+        if ($node->getRight() !== $this->nilNode && !$node->notIntersectRightSubtree($searchNode)) {
+            yield from $this->treeSearchInterval($node->getRight(), $searchNode, $res);
         }
     }
 
@@ -491,8 +491,6 @@ class IntervalTree
     public function testBlackHeightProperty($node)
     {
         $height = 0;
-        $heightLeft = 0;
-        $heightRight = 0;
         if ($node->color === Node::COLOR_BLACK) {
             $height++;
         }
