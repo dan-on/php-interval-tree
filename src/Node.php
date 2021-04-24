@@ -44,16 +44,13 @@ class Node
 
     private $max;
 
-    public function __construct($key = null, $value = null)
+    public function __construct($key, $value = null)
     {
-        if (is_null($key)) {
-            $this->item = new Item($key, $value); // key is supposed to be instance of Interval
-        } elseif ($key && is_array($key) && count($key) === 2) {
-            $item = new Item(new Interval(min($key), max($key)), $value);
+        if ($key && is_array($key) && count($key) === 2) {
+            $item = new Item(Interval::fromArray($key), $value);
             $this->item = $item;
+            $this->max = $this->item->getKey() ? clone $this->item->getKey() : null;
         }
-
-        $this->max = $this->item->getKey() ? clone $this->item->getKey() : null;
     }
 
     public function getLeft(): Node
@@ -89,17 +86,6 @@ class Node
     public function getValue()
     {
         return $this->item->getValue();
-    }
-
-    public function getKey()
-    {
-        return $this->item->getKey();
-    }
-
-    public function isNil()
-    {
-        return ($this->item->getKey() === null && $this->item->getValue() === null &&
-            $this->left === null && $this->right === null && $this->color === Node::COLOR_BLACK);
     }
 
     public function lessThan($otherNode)

@@ -16,7 +16,7 @@ final class IntervalTree
      */
     public function __construct()
     {
-        $this->nilNode = new Node();
+        $this->nilNode = new Node(null);
     }
 
     /**
