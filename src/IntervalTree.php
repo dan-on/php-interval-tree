@@ -94,7 +94,7 @@ class IntervalTree
         $insertNode->color = Node::COLOR_RED;
         
         $this->treeInsert($insertNode);
-        $this->recalcMax($insertNode);
+        $this->recalculateMax($insertNode);
         return $insertNode;
     }
 
@@ -127,7 +127,7 @@ class IntervalTree
         return true;
     }
 
-    private function recalcMax($node): void
+    private function recalculateMax($node): void
     {
         $nodeCurrent = $node;
         while ($nodeCurrent->getParent() !== null) {
@@ -243,14 +243,14 @@ class IntervalTree
             $cutNode->getParent()->updateMax(); // update max property of the parent
         }
 
-        $this->recalcMax($fixNode); // update max property upward from fix_node to root
+        $this->recalculateMax($fixNode); // update max property upward from fix_node to root
 
         // deleteNode becomes cutNode, it means that we cannot hold reference
         // to node in outer structure and we will have to delete by key, additional search need
         if ($cutNode !== $deleteNode) {
             $deleteNode->copyData($cutNode);
             $deleteNode->updateMax(); // update max property of the cut node at the new place
-            $this->recalcMax($deleteNode); // update max property upward from deleteNode to root
+            $this->recalculateMax($deleteNode); // update max property upward from deleteNode to root
         }
 
         if ( /*fix_node !== this.nil_node && */$cutNode->color === Node::COLOR_BLACK) {
