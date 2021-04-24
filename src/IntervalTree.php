@@ -86,14 +86,6 @@ class IntervalTree
      */
     public function insert(array $key, $value = null)
     {
-        if ($key === null) {
-            return;
-        }
-
-        if ($value === null) {
-            $value = $key;
-        }
-
         $insertNode = new Node($key, $value);
         $insertNode->setLeft($this->nilNode);
         $insertNode->setRight($this->nilNode);
@@ -120,8 +112,8 @@ class IntervalTree
 
     /**
      * Remove entry {key, value} from the tree
-     * @param key - interval correspondent to keys stored in the tree
-     * @param value - - value object
+     * @param $key - interval correspondent to keys stored in the tree
+     * @param $value - value object
      * @return bool - true if item {key, value} deleted, false if not found
      */
     public function remove($key, $value): bool
