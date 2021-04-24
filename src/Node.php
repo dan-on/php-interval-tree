@@ -40,9 +40,9 @@ class Node
      *
      * @var object
      */
-    public $item;
+    private $item;
 
-    public $max;
+    private $max;
 
     public function __construct($key = null, $value = null)
     {
@@ -85,7 +85,6 @@ class Node
     {
         $this->parent = $node;
     }
-
 
     public function getValue()
     {
