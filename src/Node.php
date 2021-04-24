@@ -23,14 +23,14 @@ class Node
 
     /**
      * Reference to parent node
-     * 
+     *
      * @var Node
      */
     private $parent;
 
     /**
      * Color of node (BLACK or RED)
-     * 
+     *
      * @var int
      */
     public $color;
@@ -112,8 +112,9 @@ class Node
     {
         $valueEqual = true;
         if ($this->item->getValue() && $otherNode->item->getValue()) {
-            $valueEqual = $this->item->getValue() ? $this->item->getValue()->equalTo($otherNode->item->getValue()) :
-                $this->item->getValue() == $otherNode->item->getValue();
+            $valueEqual = $this->item->getValue()
+                ? $this->item->getValue()->equalTo($otherNode->item->getValue())
+                : $this->item->getValue() === $otherNode->item->getValue();
         }
         return $this->item->getKey()->equalTo($otherNode->item->getKey()) && $valueEqual;
     }

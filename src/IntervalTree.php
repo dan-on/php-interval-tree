@@ -6,7 +6,7 @@ namespace Danon\IntervalTree;
 use Generator;
 use Iterator;
 
-class IntervalTree
+final class IntervalTree
 {
     private $root;
     private $nilNode;
@@ -233,7 +233,7 @@ class IntervalTree
 
         $fixNode->setParent($cutNode->getParent());
 
-        if ($cutNode === $this->root) {
+        if ($cutNode->getParent() === null) {
             $this->root = $fixNode;
         } else {
             if ($cutNode === $cutNode->getParent()->getLeft()) {
@@ -409,7 +409,7 @@ class IntervalTree
         }
         $y->setParent($x->getParent()); // move parent
 
-        if ($x === $this->root) {
+        if ($x->getParent() === null) {
             $this->root = $y; // y becomes root
         } else { // y becomes child of x.parent
             if ($x === $x->getParent()->getLeft()) {
@@ -421,7 +421,7 @@ class IntervalTree
         $y->setLeft($x); // x becomes left child of y
         $x->setParent($y); // and y becomes parent of x
 
-        if ($x !== null && $x !== $this->nilNode) {
+        if ($x !== $this->nilNode) {
             $x->updateMax();
         }
 
@@ -442,7 +442,7 @@ class IntervalTree
         }
         $x->setParent($y->getParent()); // move parent
 
-        if ($y === $this->root) { // x becomes root
+        if ($y->getParent() === null) { // x becomes root
             $this->root = $x;
         } else { // y becomes child of x.parent
             if ($y === $y->getParent()->getLeft()) {
