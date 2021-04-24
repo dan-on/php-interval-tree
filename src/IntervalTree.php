@@ -7,8 +7,8 @@ use Iterator;
 
 class IntervalTree
 {
-    public $root;
-    public $nilNode;
+    private $root;
+    private $nilNode;
 
     /**
      * Construct new empty instance of IntervalTree
