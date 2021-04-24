@@ -127,7 +127,7 @@ class IntervalTree
         return true;
     }
 
-    public function recalcMax($node): void
+    private function recalcMax($node): void
     {
         $nodeCurrent = $node;
         while ($nodeCurrent->getParent() !== null) {
@@ -136,7 +136,7 @@ class IntervalTree
         }
     }
 
-    public function treeInsert($insertNode): void
+    private function treeInsert($insertNode): void
     {
         $currentNode = $this->root;
         $parentNode = null;
@@ -167,7 +167,7 @@ class IntervalTree
 
     // After insertion insert_node may have red-colored parent, and this is a single possible violation
     // Go upwards to the root and re-color until violation will be resolved
-    public function insertFixup($insertNode): void
+    private function insertFixup($insertNode): void
     {
         $currentNode = $insertNode;
         while ($currentNode !== $this->root && $currentNode->getParent()->color === Node::COLOR_RED) {
@@ -215,7 +215,7 @@ class IntervalTree
         $this->root->color = Node::COLOR_BLACK;
     }
 
-    public function treeDelete(Node $deleteNode): void
+    private function treeDelete(Node $deleteNode): void
     {
         if ($deleteNode->getLeft() === $this->nilNode || $deleteNode->getRight() === $this->nilNode) { // delete_node has less then 2 children
             $cutNode = $deleteNode;
@@ -258,7 +258,7 @@ class IntervalTree
         }
     }
 
-    public function deleteFixup($fixNode): void
+    private function deleteFixup($fixNode): void
     {
         $currentNode = $fixNode;
 
@@ -329,7 +329,7 @@ class IntervalTree
         $currentNode->color = Node::COLOR_BLACK;
     }
 
-    public function treeSearch($node, $searchNode)
+    private function treeSearch($node, $searchNode)
     {
         if ($node === null || $node === $this->nilNode) {
             return null;
@@ -348,7 +348,7 @@ class IntervalTree
 
     // Original search_interval method; container res support push() insertion
     // Search all intervals intersecting given one
-    public function treeSearchInterval(Node $node, $searchNode, &$res = []): Generator
+    private function treeSearchInterval(Node $node, $searchNode, &$res = []): Generator
     {
         // if ($node->getLeft() !== $this->nilNode && $node->getLeft()->max >= $low) {
         if ($node->getLeft() !== $this->nilNode && !$node->notIntersectLeftSubtree($searchNode)) {
@@ -365,7 +365,7 @@ class IntervalTree
         }
     }
 
-    public function localMinimum(Node $node)
+    private function localMinimum(Node $node): Node
     {
         $nodeMin = $node;
         while ($nodeMin->getLeft() !== null && $nodeMin->getLeft() !== $this->nilNode) {
@@ -397,7 +397,7 @@ class IntervalTree
     //        / \             <---------------         / \
     //       a   b                                    b   c
 
-    public function rotateLeft(Node $x)
+    private function rotateLeft(Node $x): void
     {
         $y = $x->getRight();
 
@@ -430,7 +430,7 @@ class IntervalTree
         }
     }
 
-    public function rotateRight(Node $y)
+    private function rotateRight(Node $y): void
     {
         $x = $y->getLeft();
 
@@ -453,7 +453,7 @@ class IntervalTree
         $x->setRight($y); // y becomes right child of x
         $y->setParent($x); // and x becomes parent of y
 
-        if ($y !== null && $y !== $this->nilNode) {
+        if ($y !== $this->nilNode) {
             $y->updateMax();
         }
 
@@ -463,7 +463,7 @@ class IntervalTree
         }
     }
 
-    public function treeWalk(Node $node, $action)
+    private function treeWalk(Node $node, $action): void
     {
         if ($node !== null && $node !== $this->nilNode) {
             $this->treeWalk($node->getLeft(), $action);
@@ -472,42 +472,4 @@ class IntervalTree
             $this->treeWalk($node->getRight(), $action);
         }
     }
-
-    /* Return true if all red nodes have exactly two black child nodes */
-    public function testRedBlackProperty()
-    {
-        $res = true;
-        $this->treeWalk($this->root, function ($node) use (&$res) {
-            if ($node->color === Node::COLOR_RED) {
-                if (!($node->getLeft()->color === Node::COLOR_BLACK && $node->getRight()->color === Node::COLOR_BLACK)) {
-                    $res = false;
-                }
-            }
-        });
-        return $res;
-    }
-
-    /* Throw error if not every path from root to bottom has same black height */
-    public function testBlackHeightProperty($node)
-    {
-        $height = 0;
-        if ($node->color === Node::COLOR_BLACK) {
-            $height++;
-        }
-        if ($node->getLeft() !== $this->nilNode) {
-            $heightLeft = $this->testBlackHeightProperty($node->getLeft());
-        } else {
-            $heightLeft = 1;
-        }
-        if ($node->getRight() !== $this->nilNode) {
-            $heightRight = $this->testBlackHeightProperty($node->getRight());
-        } else {
-            $heightRight = 1;
-        }
-        if ($heightLeft !== $heightRight) {
-            throw new \Exception('Red-black height property violated');
-        }
-        $height += $heightLeft;
-        return $height;
-    }
-};
+}
