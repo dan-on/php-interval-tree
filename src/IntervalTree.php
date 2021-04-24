@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Danon\IntervalTree;
 
@@ -92,7 +93,7 @@ class IntervalTree
         $insertNode->setRight($this->nilNode);
         $insertNode->setParent(null);
         $insertNode->color = Node::COLOR_RED;
-        
+
         $this->treeInsert($insertNode);
         $this->recalculateMax($insertNode);
         return $insertNode;
@@ -100,7 +101,7 @@ class IntervalTree
 
     /**
      * Returns true if item {key,value} exist in the tree
-     * 
+     *
      * @param Interval $key interval correspondent to keys stored in the tree
      * @param mixed $value value object to be checked
      * @return bool true if item {key, value} exist in the tree, false otherwise
@@ -253,7 +254,7 @@ class IntervalTree
             $this->recalculateMax($deleteNode); // update max property upward from deleteNode to root
         }
 
-        if ( /*fix_node !== this.nil_node && */$cutNode->color === Node::COLOR_BLACK) {
+        if ( /*fix_node !== this.nil_node && */ $cutNode->color === Node::COLOR_BLACK) {
             $this->deleteFixup($fixNode);
         }
     }
