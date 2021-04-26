@@ -175,8 +175,11 @@ class IntervalTree
         $deleteNode = $this->treeSearch($this->root, $searchNode);
         if ($deleteNode) {
             $this->treeDelete($deleteNode);
+
+            return true;
         }
-        return $deleteNode;
+
+        return false;
     }
 
     /**
