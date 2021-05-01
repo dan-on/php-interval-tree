@@ -88,12 +88,12 @@ class Node
         return $this->item->getValue();
     }
 
-    public function lessThan($otherNode)
+    public function lessThan(Node $otherNode): bool
     {
         return $this->item->getKey()->lessThan($otherNode->item->getKey());
     }
 
-    public function equalTo($otherNode)
+    public function equalTo(Node $otherNode): bool
     {
         $valueEqual = true;
         if ($this->item->getValue() && $otherNode->item->getValue()) {
@@ -104,17 +104,17 @@ class Node
         return $this->item->getKey()->equalTo($otherNode->item->getKey()) && $valueEqual;
     }
 
-    public function intersect($otherNode)
+    public function intersect(Node $otherNode): bool
     {
         return $this->item->getKey()->intersect($otherNode->item->getKey());
     }
 
-    public function copyData($otherNode)
+    public function copyData(Node $otherNode)
     {
         $this->item = clone $otherNode->item;
     }
 
-    public function updateMax()
+    public function updateMax(): void
     {
         // use key (Interval) max property instead of key.high
         $this->max = $this->item->getKey() ? $this->item->getKey()->getMax() : null;
@@ -127,7 +127,7 @@ class Node
     }
 
     // Other_node does not intersect any node of left subtree, if this.left.max < other_node.item.key.low
-    public function notIntersectLeftSubtree($searchNode)
+    public function notIntersectLeftSubtree(Node $searchNode): bool
     {
         //const comparable_less_than = this.item.key.constructor.comparable_less_than;  // static method
         $high = $this->left->max->getHigh() !== null ? $this->left->max->getHigh() : $this->left->max;
@@ -135,7 +135,7 @@ class Node
     }
 
     // Other_node does not intersect right subtree if other_node.item.key.high < this.right.key.low
-    public function notIntersectRightSubtree($searchNode)
+    public function notIntersectRightSubtree(Node $searchNode): bool
     {
         //const comparable_less_than = this.item.key.constructor.comparable_less_than;  // static method
         $low = $this->right->max->getLow() !== null ? $this->right->max->getLow() : $this->right->item->getKey()->getLow();
