@@ -49,7 +49,7 @@ class Node
         if ($key && is_array($key) && count($key) === 2) {
             $item = new Item(Interval::fromArray($key), $value);
             $this->item = $item;
-            $this->max = $this->item->getKey() ? clone $this->item->getKey() : null;
+            $this->max = $this->item->getKey();
         }
     }
 
