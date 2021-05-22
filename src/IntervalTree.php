@@ -256,7 +256,7 @@ final class IntervalTree
             $this->recalculateMax($deleteNode); // update max property upward from deleteNode to root
         }
 
-        if ( /*fix_node !== this.nil_node && */ $cutNode->color === Node::COLOR_BLACK) {
+        if ($cutNode->isBlack()) {
             $this->deleteFixup($fixNode);
         }
     }
@@ -268,7 +268,7 @@ final class IntervalTree
         while ($currentNode !== $this->root && $currentNode->getParent() !== null && $currentNode->isBlack()) {
             if ($currentNode === $currentNode->getParent()->getLeft()) { // fix node is left child
                 $brotherNode = $currentNode->getParent()->getRight();
-                if ($brotherNode->color === Node::COLOR_RED) { // Case 1. Brother is red
+                if ($brotherNode->isRed()) { // Case 1. Brother is red
                     $brotherNode->color = Node::COLOR_BLACK; // re-color brother
                     $currentNode->getParent()->color = Node::COLOR_RED; // re-color father
                     $this->rotateLeft($currentNode->getParent());
@@ -439,7 +439,7 @@ final class IntervalTree
 
         if ($y->getParent() === null) { // x becomes root
             $this->root = $x;
-        } else if ($y === $y->getParent()->getLeft()) {
+        } elseif ($y === $y->getParent()->getLeft()) {
             $y->getParent()->setLeft($x);
         } else {
             $y->getParent()->setRight($x);
