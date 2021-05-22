@@ -109,7 +109,7 @@ class Node
         return $this->item->getKey()->intersect($otherNode->item->getKey());
     }
 
-    public function copyData(Node $otherNode)
+    public function copyData(Node $otherNode): void
     {
         $this->item = clone $otherNode->item;
     }
