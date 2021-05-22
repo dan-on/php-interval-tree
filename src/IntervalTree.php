@@ -168,14 +168,14 @@ final class IntervalTree
 
     // After insertion insert_node may have red-colored parent, and this is a single possible violation
     // Go upwards to the root and re-color until violation will be resolved
-    private function insertFixup($insertNode): void
+    private function insertFixup(Node $insertNode): void
     {
         $currentNode = $insertNode;
-        while ($currentNode !== $this->root && $currentNode->getParent()->color === Node::COLOR_RED) {
+        while ($currentNode !== $this->root && $currentNode->getParent()->isRed()) {
             // parent is left child of grandfather
             if ($currentNode->getParent() === $currentNode->getParent()->getParent()->getLeft()) {
                 $uncleNode = $currentNode->getParent()->getParent()->getRight(); // right brother of parent
-                if ($uncleNode->color === Node::COLOR_RED) { // Case 1. Uncle is red
+                if ($uncleNode->isRed()) { // Case 1. Uncle is red
                     // re-color father and uncle into black
                     $currentNode->getParent()->color = Node::COLOR_BLACK;
                     $uncleNode->color = Node::COLOR_BLACK;
@@ -194,7 +194,7 @@ final class IntervalTree
                 }
             } else { // parent is right child of grandfather
                 $uncleNode = $currentNode->getParent()->getParent()->getLeft(); // left brother of parent
-                if ($uncleNode->color === Node::COLOR_RED) { // Case 4. Uncle is red
+                if ($uncleNode->isRed()) { // Case 4. Uncle is red
                     // re-color father and uncle into black
                     $currentNode->getParent()->color = Node::COLOR_BLACK;
                     $uncleNode->color = Node::COLOR_BLACK;
