@@ -172,7 +172,8 @@ final class IntervalTree
     {
         $currentNode = $insertNode;
         while ($currentNode !== $this->root && $currentNode->getParent()->color === Node::COLOR_RED) {
-            if ($currentNode->getParent() === $currentNode->getParent()->getParent()->getLeft()) { // parent is left child of grandfather
+            // parent is left child of grandfather
+            if ($currentNode->getParent() === $currentNode->getParent()->getParent()->getLeft()) {
                 $uncleNode = $currentNode->getParent()->getParent()->getRight(); // right brother of parent
                 if ($uncleNode->color === Node::COLOR_RED) { // Case 1. Uncle is red
                     // re-color father and uncle into black
@@ -218,7 +219,8 @@ final class IntervalTree
 
     private function treeDelete(Node $deleteNode): void
     {
-        if ($deleteNode->getLeft() === $this->nilNode || $deleteNode->getRight() === $this->nilNode) { // delete_node has less then 2 children
+        // delete_node has less then 2 children
+        if ($deleteNode->getLeft() === $this->nilNode || $deleteNode->getRight() === $this->nilNode) {
             $cutNode = $deleteNode;
         } else { // delete_node has 2 children
             $cutNode = $this->treeSuccessor($deleteNode);
@@ -411,12 +413,10 @@ final class IntervalTree
 
         if ($x->getParent() === null) {
             $this->root = $y; // y becomes root
-        } else { // y becomes child of x.parent
-            if ($x === $x->getParent()->getLeft()) {
-                $x->getParent()->setLeft($y);
-            } else {
-                $x->getParent()->setRight($y);
-            }
+        } elseif ($x === $x->getParent()->getLeft()) {
+            $x->getParent()->setLeft($y);
+        } else {
+            $x->getParent()->setRight($y);
         }
         $y->setLeft($x); // x becomes left child of y
         $x->setParent($y); // and y becomes parent of x
@@ -444,12 +444,10 @@ final class IntervalTree
 
         if ($y->getParent() === null) { // x becomes root
             $this->root = $x;
-        } else { // y becomes child of x.parent
-            if ($y === $y->getParent()->getLeft()) {
-                $y->getParent()->setLeft($x);
-            } else {
-                $y->getParent()->setRight($x);
-            }
+        } else if ($y === $y->getParent()->getLeft()) {
+            $y->getParent()->setLeft($x);
+        } else {
+            $y->getParent()->setRight($x);
         }
         $x->setRight($y); // y becomes right child of x
         $y->setParent($x); // and x becomes parent of y
