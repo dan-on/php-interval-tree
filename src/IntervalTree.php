@@ -330,7 +330,7 @@ final class IntervalTree
         $currentNode->color = Node::COLOR_BLACK;
     }
 
-    private function treeSearch($node, $searchNode)
+    private function treeSearch(Node $node, Node $searchNode): ?Node
     {
         if ($node === null || $node === $this->nilNode) {
             return null;
