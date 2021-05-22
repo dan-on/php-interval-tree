@@ -141,4 +141,14 @@ class Node
         $low = $this->right->max->getLow() ?? $this->right->item->getKey()->getLow();
         return Interval::comparableLessThan($searchNode->item->getKey()->getHigh(), $low);
     }
+
+    public function isBlack(): bool
+    {
+        return $this->color === self::COLOR_BLACK;
+    }
+
+    public function isRed(): bool
+    {
+        return $this->color === self::COLOR_RED;
+    }
 }

@@ -261,11 +261,11 @@ final class IntervalTree
         }
     }
 
-    private function deleteFixup($fixNode): void
+    private function deleteFixup(Node $fixNode): void
     {
         $currentNode = $fixNode;
 
-        while ($currentNode !== $this->root && $currentNode->getParent() !== null && $currentNode->color === Node::COLOR_BLACK) {
+        while ($currentNode !== $this->root && $currentNode->getParent() !== null && $currentNode->isBlack()) {
             if ($currentNode === $currentNode->getParent()->getLeft()) { // fix node is left child
                 $brotherNode = $currentNode->getParent()->getRight();
                 if ($brotherNode->color === Node::COLOR_RED) { // Case 1. Brother is red
@@ -275,14 +275,12 @@ final class IntervalTree
                     $brotherNode = $currentNode->getParent()->getRight(); // update brother
                 }
                 // Derive to cases 2..4: brother is black
-                if (
-                    $brotherNode->getLeft()->color === Node::COLOR_BLACK &&
-                    $brotherNode->getRight()->color === Node::COLOR_BLACK
-                ) { // case 2: both nephews black
+                if ($brotherNode->getLeft()->isBlack() && $brotherNode->getRight()->isBlack()) {
+                    // case 2: both nephews black
                     $brotherNode->color = Node::COLOR_RED; // re-color brother
                     $currentNode = $currentNode->getParent(); // continue iteration
                 } else {
-                    if ($brotherNode->getRight()->color === Node::COLOR_BLACK) { // case 3: left nephew red, right nephew black
+                    if ($brotherNode->getRight()->isBlack()) { // case 3: left nephew red, right nephew black
                         $brotherNode->color = Node::COLOR_RED; // re-color brother
                         $brotherNode->getLeft()->color = Node::COLOR_BLACK; // re-color nephew
                         $this->rotateRight($brotherNode);
@@ -298,21 +296,18 @@ final class IntervalTree
                 }
             } else { // fix node is right child
                 $brotherNode = $currentNode->getParent()->getLeft();
-                if ($brotherNode->color === Node::COLOR_RED) { // Case 1. Brother is red
+                if ($brotherNode->isRed()) { // Case 1. Brother is red
                     $brotherNode->color = Node::COLOR_BLACK; // re-color brother
                     $currentNode->getParent()->color = Node::COLOR_RED; // re-color father
                     $this->rotateRight($currentNode->getParent());
                     $brotherNode = $currentNode->getParent()->getLeft(); // update brother
                 }
                 // Go to cases 2..4
-                if (
-                    $brotherNode->getLeft()->color === Node::COLOR_BLACK &&
-                    $brotherNode->getRight()->color === Node::COLOR_BLACK
-                ) { // case 2
+                if ($brotherNode->getLeft()->isBlack() && $brotherNode->getRight()->isBlack()) { // case 2
                     $brotherNode->color = Node::COLOR_RED; // re-color brother
                     $currentNode = $currentNode->getParent(); // continue iteration
                 } else {
-                    if ($brotherNode->getLeft()->color === Node::COLOR_BLACK) { // case 3: right nephew red, left nephew black
+                    if ($brotherNode->getLeft()->isBlack()) { // case 3: right nephew red, left nephew black
                         $brotherNode->color = Node::COLOR_RED; // re-color brother
                         $brotherNode->getRight()->color = Node::COLOR_BLACK; // re-color nephew
                         $this->rotateLeft($brotherNode);
