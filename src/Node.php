@@ -130,7 +130,7 @@ class Node
     public function notIntersectLeftSubtree(Node $searchNode): bool
     {
         //const comparable_less_than = this.item.key.constructor.comparable_less_than;  // static method
-        $high = $this->left->max->getHigh() !== null ? $this->left->max->getHigh() : $this->left->max;
+        $high = $this->left->max->getHigh() ?? $this->left->max;
         return Interval::comparableLessThan($high, $searchNode->item->getKey()->getLow());
     }
 
@@ -138,7 +138,7 @@ class Node
     public function notIntersectRightSubtree(Node $searchNode): bool
     {
         //const comparable_less_than = this.item.key.constructor.comparable_less_than;  // static method
-        $low = $this->right->max->getLow() !== null ? $this->right->max->getLow() : $this->right->item->getKey()->getLow();
+        $low = $this->right->max->getLow() ?? $this->right->item->getKey()->getLow();
         return Interval::comparableLessThan($searchNode->item->getKey()->getHigh(), $low);
     }
 }
