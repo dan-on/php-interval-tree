@@ -22,7 +22,7 @@ final class Interval
 
     public static function fromArray(array $interval): self
     {
-        if(count($interval) !== 2) {
+        if (count($interval) !== 2) {
             throw new InvalidArgumentException('Wrong interval array');
         }
         return new self($interval[0], $interval[1]);
@@ -68,14 +68,6 @@ final class Interval
     }
 
     /**
-     * Returns how key should return
-     */
-    public function output(): array
-    {
-        return [$this->getLow(), $this->getHigh()];
-    }
-
-    /**
      * Function returns maximum between two comparable values
      *
      * @param Interval $interval1
@@ -89,7 +81,7 @@ final class Interval
 
     public function getMax(): Interval
     {
-        return clone $this;
+        return $this;
     }
 
     /**

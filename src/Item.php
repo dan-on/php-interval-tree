@@ -8,7 +8,7 @@ final class Item
     private $key;
     private $value;
 
-    public function __construct(Interval $key, $value)
+    public function __construct(Interval $key, $value = null)
     {
         $this->key = $key;
         $this->value = $value;

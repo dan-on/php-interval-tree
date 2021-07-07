@@ -4,53 +4,61 @@ namespace Danon\IntervalTree;
 
 class Node
 {
-    public const COLOR_RED = 0;
-    public const COLOR_BLACK = 1;
-
     /**
-     * Reference to left child node
-     *
      * @var Node
      */
     private $left;
 
     /**
-     * Reference to right child node
-     *
      * @var Node
      */
     private $right;
 
     /**
-     * Reference to parent node
-     *
      * @var Node
      */
     private $parent;
 
     /**
-     * Color of node (BLACK or RED)
-     *
-     * @var int
+     * @var NodeColor
      */
     public $color;
 
     /**
-     * Key and value
-     *
-     * @var object
+     * @var Item
      */
     private $item;
 
     private $max;
 
-    public function __construct($key, $value = null)
+    private function __construct()
     {
-        if ($key && is_array($key) && count($key) === 2) {
-            $item = new Item(Interval::fromArray($key), $value);
-            $this->item = $item;
-            $this->max = $this->item->getKey();
-        }
+    }
+
+    public static function withItem(Item $item): self
+    {
+        $self = new self();
+        $self->item = $item;
+        $self->max = $self->item->getKey();
+
+        return $self;
+    }
+
+    public static function nil(): self
+    {
+        $self = new self;
+        $self->color = NodeColor::black();
+        return $self;
+    }
+
+    public function setColor(NodeColor $color): void
+    {
+        $this->color = $color;
+    }
+
+    public function getColor(): NodeColor
+    {
+        return $this->color;
     }
 
     public function getLeft(): Node
@@ -83,9 +91,9 @@ class Node
         $this->parent = $node;
     }
 
-    public function getValue()
+    public function getItem(): Item
     {
-        return $this->item->getValue();
+        return $this->item;
     }
 
     public function lessThan(Node $otherNode): bool
@@ -97,9 +105,7 @@ class Node
     {
         $valueEqual = true;
         if ($this->item->getValue() && $otherNode->item->getValue()) {
-            $valueEqual = $this->item->getValue()
-                ? $this->item->getValue()->equalTo($otherNode->item->getValue())
-                : $this->item->getValue() === $otherNode->item->getValue();
+            $valueEqual = $this->item->getValue() === $otherNode->item->getValue();
         }
         return $this->item->getKey()->equalTo($otherNode->item->getKey()) && $valueEqual;
     }
@@ -109,7 +115,7 @@ class Node
         return $this->item->getKey()->intersect($otherNode->item->getKey());
     }
 
-    public function copyData(Node $otherNode): void
+    public function copyItemFrom(Node $otherNode): void
     {
         $this->item = clone $otherNode->item;
     }
@@ -118,7 +124,8 @@ class Node
     {
         // use key (Interval) max property instead of key.high
         $this->max = $this->item->getKey() ? $this->item->getKey()->getMax() : null;
-        if ($this->right && $this->right->max) {
+
+        if ($this->getRight() && $this->getRight()->max) {
             $this->max = Interval::comparableMax($this->max, $this->right->max); // static method
         }
         if ($this->left && $this->left->max) {
@@ -140,15 +147,5 @@ class Node
         //const comparable_less_than = this.item.key.constructor.comparable_less_than;  // static method
         $low = $this->right->max->getLow() ?? $this->right->item->getKey()->getLow();
         return Interval::comparableLessThan($searchNode->item->getKey()->getHigh(), $low);
-    }
-
-    public function isBlack(): bool
-    {
-        return $this->color === self::COLOR_BLACK;
-    }
-
-    public function isRed(): bool
-    {
-        return $this->color === self::COLOR_RED;
     }
 }

@@ -1,81 +1,68 @@
-<?php declare(strict_types = 1);
+<?php
+declare(strict_types=1);
+
+namespace Danon\IntervalTree\Tests;
+
+use Danon\IntervalTree\Interval;
 use Danon\IntervalTree\IntervalTree;
 use PHPUnit\Framework\TestCase;
 
 final class IntervalTreeTest extends TestCase
 {
-    public function testCanBeCreatedWithEmptyConstructor(): void
+    private $tree;
+    private $intervals = [[7, 8], [1, 4], [2, 3], [7, 12], [1, 1], [3, 4], [7, 7], [0, 2], [0, 2], [0, 3], [9, 12]];
+
+    public function setUp(): void
     {
-        $this->assertInstanceOf(
-            IntervalTree::class,
-            new IntervalTree
-        );
+        $this->tree = new IntervalTree();
+        foreach ($this->intervals as $interval) {
+            $value = implode('-', $interval);
+            $this->tree->insert(
+                Interval::fromArray($interval),
+                $value
+            );
+        }
+        parent::setUp();
     }
 
-    public function testFindAllIntervalsIntersection(): void
+    public function testFindAllIntersections(): void
     {
-        $intervals = [[6, 8], [1, 4], [2, 3], [5, 12], [1, 1], [3, 5], [5, 7], [9, 15], [6, 18], [22, 344]];
-        $tree = new IntervalTree();
-        for ($i = 0; $i < count($intervals); $i++) {
-            $tree->insert($intervals[$i], $i);
+        $checkInterval = [2, 3];
+        $overlappingIntervals = [[0, 2], [0, 2], [0, 3], [1, 4], [2, 3], [3, 4]];
+        $intersections = $this->tree->iterateIntersections(Interval::fromArray($checkInterval));
+        $index = 0;
+        foreach ($intersections as $node) {
+            $overlappingInterval = Interval::fromArray($overlappingIntervals[$index]);
+            $overlappingValue = implode('-', $overlappingIntervals[$index]);
+            self::assertTrue($overlappingInterval->equalTo($node->getItem()->getKey()));
+            self::assertEquals($overlappingValue, $node->getItem()->getValue());
+            $index++;
         }
-
-        $nodesInRange = $tree->iterateIntersections([2, 3]);
-        $intersectedIntervalIndexes = [];
-        foreach ($nodesInRange as $node) {
-            $intersectedIntervalIndexes[] = $node->getValue();
-        }
-
-        $this->assertEquals($intersectedIntervalIndexes, [1, 2, 5]);
     }
 
-    public function testHasIntersection(): void
+    public function testFindAnyIntersection(): void
     {
-        $intervals = [[0, 0], [6, 8], [1, 4], [2, 3], [5, 12], [1, 1], [3, 5], [5, 7]];
-        $tree = new IntervalTree();
-        for ($i = 0; $i < count($intervals); $i++) {
-            $tree->insert($intervals[$i], $i);
-        }
-
-        $this->assertTrue($tree->hasIntersection([2, 3]));
-        $this->assertTrue($tree->hasIntersection([0, 1]));
-        $this->assertTrue($tree->hasIntersection([0, 12]));
-        $this->assertTrue($tree->hasIntersection([0, 0]));
-        $this->assertFalse($tree->hasIntersection([13, 14]));
-    }
-
-    public function testCountIntersections(): void
-    {
-        $intervals = [[6, 8], [1, 4], [2, 3], [5, 12], [1, 1], [3, 5], [5, 7]];
-        $tree = new IntervalTree();
-        for ($i = 0; $i < count($intervals); $i++) {
-            $tree->insert($intervals[$i], $i);
-        }
-
-        $this->assertEquals($tree->countIntersections([2, 3]), 3);
-        $this->assertEquals($tree->countIntersections([13, 14]), 0);
-        $this->assertEquals($tree->countIntersections([0, 1]), 2);
-    }
-
-    public function testInsertManyIntervals(): void
-    {
-        $tree = new IntervalTree();
-        for ($i = 0; $i < 250; $i++) {
-            $low = rand(1, 250);
-            $high = $low + rand(1, 100);
-            $tree->insert([$low, $high], $i);
-        }
-
-        $this->assertEquals($tree->getSize(), 250);
+        self::assertTrue($this->tree->hasIntersection(Interval::fromArray([2, 3])));
+        self::assertTrue($this->tree->hasIntersection(Interval::fromArray([0, 1])));
+        self::assertTrue($this->tree->hasIntersection(Interval::fromArray([0, 12])));
+        self::assertTrue($this->tree->hasIntersection(Interval::fromArray([0, 0])));
+        self::assertTrue($this->tree->hasIntersection(Interval::fromArray([0, 99])));
+        self::assertTrue($this->tree->hasIntersection(Interval::fromArray([5, 7])));
+        self::assertTrue($this->tree->hasIntersection(Interval::fromArray([6, 7])));
+        self::assertFalse($this->tree->hasIntersection(Interval::fromArray([13, 14])));
+        self::assertFalse($this->tree->hasIntersection(Interval::fromArray([5, 5])));
+        self::assertFalse($this->tree->hasIntersection(Interval::fromArray([5, 6])));
+        self::assertFalse($this->tree->hasIntersection(Interval::fromArray([6, 6])));
     }
 
     public function testRemove(): void
     {
-        $tree = new IntervalTree();
-        $tree->insert([1,2]);
-        $tree->insert([2,3]);
-        self::assertEquals(2, $tree->getSize());
-        $tree->remove([2,3], null);
-        self::assertEquals(1, $tree->getSize());
+        $initialSize = $this->tree->getSize();
+        $this->tree->remove(Interval::fromArray([7, 8]), '7-8');
+        self::assertEquals($this->tree->getSize(), $initialSize - 1);
+        $this->tree->remove(Interval::fromArray([1, 4]), '1-3');
+        self::assertEquals($this->tree->getSize(), $initialSize - 1);
+        $this->tree->remove(Interval::fromArray([1, 4]), '1-4');
+        self::assertEquals($this->tree->getSize(), $initialSize - 2);
     }
 }
