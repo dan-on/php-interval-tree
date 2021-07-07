@@ -58,11 +58,23 @@ final class IntervalTreeTest extends TestCase
     public function testRemove(): void
     {
         $initialSize = $this->tree->getSize();
-        $this->tree->remove(Interval::fromArray([7, 8]), '7-8');
-        self::assertEquals($this->tree->getSize(), $initialSize - 1);
-        $this->tree->remove(Interval::fromArray([1, 4]), '1-3');
-        self::assertEquals($this->tree->getSize(), $initialSize - 1);
-        $this->tree->remove(Interval::fromArray([1, 4]), '1-4');
-        self::assertEquals($this->tree->getSize(), $initialSize - 2);
+        self::assertTrue($this->tree->remove(Interval::fromArray([7, 8]), '7-8'));
+        self::assertEquals($this->tree->getSize(), --$initialSize);
+        self::assertFalse($this->tree->remove(Interval::fromArray([1, 4]), '1-3'));
+        self::assertEquals($this->tree->getSize(), $initialSize);
+        self::assertTrue($this->tree->remove(Interval::fromArray([1, 4]), '1-4'));
+        self::assertEquals($this->tree->getSize(), --$initialSize);
+        self::assertTrue($this->tree->remove(Interval::fromArray([1, 1]), '1-1'));
+        self::assertEquals($this->tree->getSize(), --$initialSize);
+        self::assertTrue($this->tree->remove(Interval::fromArray([0, 2]), '0-2'));
+        self::assertEquals($this->tree->getSize(), --$initialSize);
+        self::assertFalse($this->tree->remove(Interval::fromArray([0, 0]), '0-0'));
+        self::assertEquals($this->tree->getSize(), $initialSize);
+        self::assertTrue($this->tree->remove(Interval::fromArray([7, 12]), '7-12'));
+        self::assertEquals($this->tree->getSize(), --$initialSize);
+        self::assertFalse($this->tree->remove(Interval::fromArray([7, 12]), '7-90'));
+        self::assertEquals($this->tree->getSize(), $initialSize);
+        self::assertFalse($this->tree->remove(Interval::fromArray([7, 12]), '7-12'));
+        self::assertEquals($this->tree->getSize(), $initialSize);
     }
 }

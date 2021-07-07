@@ -46,7 +46,7 @@ final class IntervalTree
     /**
      * Iterator of nodes which keys intersect with given interval
      * If no values stored in the tree, returns array of keys which intersect given interval
-     * @param \Danon\IntervalTree\Interval $interval
+     * @param Interval $interval
      * @return Iterator
      */
     public function iterateIntersections(Interval $interval): Iterator
@@ -58,7 +58,7 @@ final class IntervalTree
     /**
      * Check that interval has intersections
      *
-     * @param \Danon\IntervalTree\Interval $interval
+     * @param Interval $interval
      * @return boolean
      */
     public function hasIntersection(Interval $interval): bool
@@ -70,7 +70,7 @@ final class IntervalTree
     /**
      * Count intervals that has intersections
      *
-     * @param \Danon\IntervalTree\Interval $interval
+     * @param Interval $interval
      * @return int
      */
     public function countIntersections(Interval $interval): int
@@ -82,7 +82,7 @@ final class IntervalTree
     /**
      * Insert new item into interval tree
      *
-     * @param \Danon\IntervalTree\Interval $interval
+     * @param Interval $interval
      * @param mixed $value - value representing any object (optional)
      * @return Node - returns reference to inserted node
      */
@@ -123,8 +123,9 @@ final class IntervalTree
         $deleteNode = $this->treeSearch($this->root, $searchNode);
         if ($deleteNode) {
             $this->treeDelete($deleteNode);
+            return true;
         }
-        return true;
+        return false;
     }
 
     private function recalculateMax($node): void
@@ -177,7 +178,7 @@ final class IntervalTree
                 if ($uncleNode->getColor()->isRed()) {
                     $currentNode->getParent()->setColor(NodeColor::black());
                     $uncleNode->setColor(NodeColor::black());
-                    $currentNode->getParent()->getParent()->setColor(NodeColor::red());
+                    $grandfather->setColor(NodeColor::red());
                     $currentNode = $currentNode->getParent()->getParent();
                 } else {
                     if ($currentNode === $currentNode->getParent()->getRight()) {
@@ -185,7 +186,7 @@ final class IntervalTree
                         $this->rotateLeft($currentNode);
                     }
                     $currentNode->getParent()->setColor(NodeColor::black());
-                    $currentNode->getParent()->getParent()->setColor(NodeColor::red());
+                    $grandfather->setColor(NodeColor::red());
                     $this->rotateRight($currentNode->getParent()->getParent());
                 }
             } else {
@@ -194,7 +195,7 @@ final class IntervalTree
                 if ($uncleNode->getColor()->isRed()) {
                     $currentNode->getParent()->setColor(NodeColor::black());
                     $uncleNode->setColor(NodeColor::black());
-                    $currentNode->getParent()->getParent()->setColor(NodeColor::red());
+                    $grandfather->setColor(NodeColor::red());
                     $currentNode = $currentNode->getParent()->getParent();
                 } else {
                     if ($currentNode === $currentNode->getParent()->getLeft()) {
@@ -202,7 +203,7 @@ final class IntervalTree
                         $this->rotateRight($currentNode);
                     }
                     $currentNode->getParent()->setColor(NodeColor::black());
-                    $currentNode->getParent()->getParent()->setColor(NodeColor::red());
+                    $grandfather->setColor(NodeColor::red());
                     $this->rotateLeft($currentNode->getParent()->getParent());
                 }
             }
@@ -271,7 +272,7 @@ final class IntervalTree
                     $brotherNode = $currentNode->getParent()->getRight();
                 }
 
-                if ($brotherNode->getLeft()->getColor()->isBlack() && $brotherNode->getRight()->getColor()->isBlack()) {
+                if ($brotherNode->getLeft()->getColor()->isBlack()) {
                     $brotherNode->setColor(NodeColor::red());
                     $currentNode = $currentNode->getParent();
                 } else {
@@ -295,7 +296,7 @@ final class IntervalTree
                     $this->rotateRight($currentNode->getParent());
                     $brotherNode = $currentNode->getParent()->getLeft();
                 }
-                if ($brotherNode->getLeft()->getColor()->isBlack() && $brotherNode->getRight()->getColor()->isBlack()) {
+                if ($brotherNode->getRight()->getColor()->isBlack()) {
                     $brotherNode->setColor(NodeColor::red());
                     $currentNode = $currentNode->getParent();
                 } else {
