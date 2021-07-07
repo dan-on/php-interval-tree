@@ -114,7 +114,7 @@ final class IntervalTree
 
     /**
      * @param Interval $interval
-     * @param $value
+     * @param mixed $value
      * @return bool
      */
     public function remove(Interval $interval, $value): bool
@@ -320,7 +320,7 @@ final class IntervalTree
 
     private function treeSearch(Node $node, Node $searchNode): ?Node
     {
-        if ($node === null || $node === $this->nilNode) {
+        if ($node === $this->nilNode) {
             return null;
         }
 

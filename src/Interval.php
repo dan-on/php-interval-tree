@@ -84,13 +84,6 @@ final class Interval
         return $this;
     }
 
-    /**
-     * Predicate returns true if first value less than second value
-     *
-     * @param $val1
-     * @param $val2
-     * @return bool
-     */
     public static function comparableLessThan($val1, $val2): bool
     {
         return $val1 < $val2;

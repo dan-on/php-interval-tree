@@ -123,12 +123,12 @@ class Node
     public function updateMax(): void
     {
         // use key (Interval) max property instead of key.high
-        $this->max = $this->item->getKey() ? $this->item->getKey()->getMax() : null;
+        $this->max = $this->item->getKey()->getMax();
 
-        if ($this->getRight() && $this->getRight()->max) {
+        if ($this->getRight()->max) {
             $this->max = Interval::comparableMax($this->max, $this->right->max); // static method
         }
-        if ($this->left && $this->left->max) {
+        if ($this->left->max) {
             $this->max = Interval::comparableMax($this->max, $this->left->max);
         }
     }
