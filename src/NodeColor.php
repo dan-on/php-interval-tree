@@ -8,6 +8,9 @@ class NodeColor
     public const COLOR_RED = 0;
     public const COLOR_BLACK = 1;
 
+    /**
+     * @var int
+     */
     protected $color;
 
     private function __construct()

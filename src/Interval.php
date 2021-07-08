@@ -7,7 +7,14 @@ use InvalidArgumentException;
 
 final class Interval
 {
+    /**
+     * @var int
+     */
     private $low;
+
+    /**
+     * @var int
+     */
     private $high;
 
     public function __construct(int $low, int $high)
@@ -20,6 +27,10 @@ final class Interval
         $this->high = $high;
     }
 
+    /**
+     * @param int[] $interval
+     * @return static
+     */
     public static function fromArray(array $interval): self
     {
         if (count($interval) !== 2) {
@@ -84,7 +95,7 @@ final class Interval
         return $this;
     }
 
-    public static function comparableLessThan($val1, $val2): bool
+    public static function comparableLessThan(int $val1, int $val2): bool
     {
         return $val1 < $val2;
     }

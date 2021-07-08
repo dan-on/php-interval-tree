@@ -8,7 +8,10 @@ use Iterator;
 
 final class IntervalTree
 {
+    /** @var Node*/
     private $root;
+
+    /** @var Node */
     private $nilNode;
 
     /**
@@ -47,7 +50,7 @@ final class IntervalTree
      * Iterator of nodes which keys intersect with given interval
      * If no values stored in the tree, returns array of keys which intersect given interval
      * @param Interval $interval
-     * @return Iterator
+     * @return Iterator<Node>
      */
     public function iterateIntersections(Interval $interval): Iterator
     {
@@ -128,7 +131,7 @@ final class IntervalTree
         return false;
     }
 
-    private function recalculateMax($node): void
+    private function recalculateMax(Node $node): void
     {
         $nodeCurrent = $node;
         while ($nodeCurrent->getParent() !== null) {
@@ -335,9 +338,13 @@ final class IntervalTree
         return $this->treeSearch($node->getRight(), $searchNode);
     }
 
-    // Original search_interval method; container res support push() insertion
-    // Search all intervals intersecting given one
-    private function treeSearchInterval(Node $node, $searchNode, &$res = []): Generator
+    /**
+     * @param Node $node
+     * @param Node $searchNode
+     * @param array<Node> $res
+     * @return Generator<Node>
+     */
+    private function treeSearchInterval(Node $node, Node $searchNode, array &$res = []): Generator
     {
         // if ($node->getLeft() !== $this->nilNode && $node->getLeft()->max >= $low) {
         if ($node->getLeft() !== $this->nilNode && !$node->notIntersectLeftSubtree($searchNode)) {
@@ -363,7 +370,7 @@ final class IntervalTree
         return $nodeMin;
     }
 
-    public function treeSuccessor($node)
+    public function treeSuccessor(Node $node): Node
     {
         if ($node->getRight() !== $this->nilNode) {
             $nodeSuccessor = $this->localMinimum($node->getRight());
@@ -441,7 +448,7 @@ final class IntervalTree
         }
     }
 
-    private function treeWalk(Node $node, $action): void
+    private function treeWalk(Node $node, callable $action): void
     {
         if ($node !== null && $node !== $this->nilNode) {
             $this->treeWalk($node->getLeft(), $action);

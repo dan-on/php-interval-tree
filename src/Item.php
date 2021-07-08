@@ -5,9 +5,17 @@ namespace Danon\IntervalTree;
 
 final class Item
 {
+    /** @var Interval  */
     private $key;
+
+    /** @var mixed */
     private $value;
 
+    /**
+     * Item constructor.
+     * @param Interval $key
+     * @param mixed $value
+     */
     public function __construct(Interval $key, $value = null)
     {
         $this->key = $key;
@@ -19,6 +27,9 @@ final class Item
         return $this->key;
     }
 
+    /**
+     * @return mixed
+     */
     public function getValue()
     {
         return $this->value;

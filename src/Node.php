@@ -29,6 +29,7 @@ class Node
      */
     private $item;
 
+    /** @var null|Interval */
     private $max;
 
     private function __construct()
@@ -125,10 +126,10 @@ class Node
         // use key (Interval) max property instead of key.high
         $this->max = $this->item->getKey()->getMax();
 
-        if ($this->getRight()->max) {
+        if ($this->getRight()->max !== null) {
             $this->max = Interval::comparableMax($this->max, $this->right->max); // static method
         }
-        if ($this->left->max) {
+        if ($this->left->max !== null) {
             $this->max = Interval::comparableMax($this->max, $this->left->max);
         }
     }

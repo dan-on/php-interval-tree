@@ -9,7 +9,10 @@ use PHPUnit\Framework\TestCase;
 
 final class IntervalTreeTest extends TestCase
 {
+    /** @var IntervalTree  */
     private $tree;
+
+    /** @var array<array<int>> */
     private $intervals = [[7, 8], [1, 4], [2, 3], [7, 12], [1, 1], [3, 4], [7, 7], [0, 2], [0, 2], [0, 3], [9, 12]];
 
     public function setUp(): void
