@@ -370,7 +370,7 @@ final class IntervalTree
         return $nodeMin;
     }
 
-    public function treeSuccessor(Node $node): Node
+    public function treeSuccessor(Node $node): ?Node
     {
         if ($node->getRight() !== $this->nilNode) {
             $nodeSuccessor = $this->localMinimum($node->getRight());
