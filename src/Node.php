@@ -118,16 +118,15 @@ class Node
 
     public function copyPairFrom(Node $otherNode): void
     {
-        $this->pair = clone $otherNode->getPair();
+        $this->pair = $otherNode->getPair();
     }
 
     public function updateMax(): void
     {
-        // use key (Interval) max property instead of key.high
         $this->max = $this->getPair()->getInterval()->getMax();
 
         if ($this->getRight()->max !== null) {
-            $this->max = Interval::comparableMax($this->max, $this->right->max); // static method
+            $this->max = Interval::comparableMax($this->max, $this->right->max);
         }
         if ($this->left->max !== null) {
             $this->max = Interval::comparableMax($this->max, $this->left->max);

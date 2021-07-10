@@ -43,8 +43,7 @@ final class IntervalTree
     }
 
     /**
-     * Iterator of nodes which keys intersect with given interval
-     * If no values stored in the tree, returns array of keys which intersect given interval
+     * Iterator of nodes which intervals intersect with given interval
      * @param Interval $interval
      * @return Iterator
      */
@@ -81,11 +80,11 @@ final class IntervalTree
     }
 
     /**
-     * Insert new item into interval tree
+     * Insert new pair (interval + value) into interval tree
      *
      * @param Interval $interval
-     * @param mixed $value - value representing any object (optional)
-     * @return Node - returns reference to inserted node
+     * @param mixed $value
+     * @return Node
      */
     public function insert(Interval $interval, $value = null): Node
     {
@@ -101,16 +100,15 @@ final class IntervalTree
     }
 
     /**
-     * Returns true if item {key,value} exist in the tree
-     *
-     * @param Interval $key interval correspondent to keys stored in the tree
-     * @param mixed $value value object to be checked
-     * @return bool true if item {key, value} exist in the tree, false otherwise
+     * Returns true if interval and value exist in the tree
+     * @param Interval $interval
+     * @param mixed $value
+     * @return bool
      */
-    public function exist(Interval $key, $value): bool
+    public function exist(Interval $interval, $value): bool
     {
-        $searchNode = Node::withPair(new Pair($key, $value));
-        return (bool)$this->treeSearch($this->root, $searchNode);
+        $searchNode = Node::withPair(new Pair($interval, $value));
+        return $this->treeSearch($this->root, $searchNode) !== null;
     }
 
     /**
@@ -167,8 +165,11 @@ final class IntervalTree
         $this->insertFixup($insertNode);
     }
 
-    // After insertion insert_node may have red-colored parent, and this is a single possible violation
-    // Go upwards to the root and re-color until violation will be resolved
+    /**
+     * After insertion insert_node may have red-colored parent, and this is a single possible violation
+     * Go upwards to the root and re-color until violation will be resolved
+     * @param Node $insertNode
+     */
     private function insertFixup(Node $insertNode): void
     {
         $currentNode = $insertNode;
@@ -215,10 +216,9 @@ final class IntervalTree
 
     private function treeDelete(Node $deleteNode): void
     {
-        // delete_node has less then 2 children
         if ($deleteNode->getLeft() === $this->nilNode || $deleteNode->getRight() === $this->nilNode) {
             $cutNode = $deleteNode;
-        } else { // delete_node has 2 children
+        } else {
             $cutNode = $this->treeSuccessor($deleteNode);
         }
 
