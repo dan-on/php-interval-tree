@@ -125,7 +125,7 @@ class Node
 
     public function updateMax(): void
     {
-        $this->max = $this->getPair()->getInterval()->getMax();
+        $this->max = $this->getPair()->getInterval();
 
         if ($this->getRight()->max !== null) {
             $this->max = $this->max->merge($this->getRight()->max);

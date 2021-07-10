@@ -77,9 +77,4 @@ final class Interval
             max($this->getHigh(), $otherInterval->getHigh())
         );
     }
-
-    public function getMax(): Interval
-    {
-        return $this;
-    }
 }
