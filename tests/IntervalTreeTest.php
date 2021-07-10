@@ -36,8 +36,8 @@ final class IntervalTreeTest extends TestCase
         foreach ($intersections as $index => $node) {
             $overlappingInterval = Interval::fromArray($overlappingIntervals[$index]);
             $overlappingValue = implode('-', $overlappingIntervals[$index]);
-            self::assertTrue($overlappingInterval->equalTo($node->getItem()->getKey()));
-            self::assertEquals($overlappingValue, $node->getItem()->getValue());
+            self::assertTrue($overlappingInterval->equalTo($node->getPair()->getInterval()));
+            self::assertEquals($overlappingValue, $node->getPair()->getValue());
         }
     }
 

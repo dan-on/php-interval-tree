@@ -50,7 +50,7 @@ final class IntervalTree
      */
     public function iterateIntersections(Interval $interval): Iterator
     {
-        $searchNode = Node::withItem(new Item($interval));
+        $searchNode = Node::withPair(new Pair($interval));
         foreach ($this->treeSearchInterval($searchNode) as $node) {
             yield $node;
         }
@@ -89,7 +89,7 @@ final class IntervalTree
      */
     public function insert(Interval $interval, $value = null): Node
     {
-        $insertNode = Node::withItem(new Item($interval, $value));
+        $insertNode = Node::withPair(new Pair($interval, $value));
         $insertNode->setLeft($this->nilNode);
         $insertNode->setRight($this->nilNode);
         $insertNode->setParent(null);
@@ -109,7 +109,7 @@ final class IntervalTree
      */
     public function exist(Interval $key, $value): bool
     {
-        $searchNode = Node::withItem(new Item($key, $value));
+        $searchNode = Node::withPair(new Pair($key, $value));
         return (bool)$this->treeSearch($this->root, $searchNode);
     }
 
@@ -120,7 +120,7 @@ final class IntervalTree
      */
     public function remove(Interval $interval, $value): bool
     {
-        $searchNode = Node::withItem(new Item($interval, $value));
+        $searchNode = Node::withPair(new Pair($interval, $value));
         $deleteNode = $this->treeSearch($this->root, $searchNode);
         if ($deleteNode) {
             $this->treeDelete($deleteNode);
@@ -247,7 +247,7 @@ final class IntervalTree
         // deleteNode becomes cutNode, it means that we cannot hold reference
         // to node in outer structure and we will have to delete by key, additional search need
         if ($cutNode !== $deleteNode) {
-            $deleteNode->copyItemFrom($cutNode);
+            $deleteNode->copyPairFrom($cutNode);
             $deleteNode->updateMax(); // update max property of the cut node at the new place
             $this->recalculateMax($deleteNode); // update max property upward from deleteNode to root
         }

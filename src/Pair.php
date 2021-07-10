@@ -3,28 +3,27 @@ declare(strict_types=1);
 
 namespace Danon\IntervalTree;
 
-final class Item
+final class Pair
 {
     /** @var Interval  */
-    private $key;
+    private $interval;
 
     /** @var mixed */
     private $value;
 
     /**
-     * Item constructor.
-     * @param Interval $key
+     * @param Interval $interval
      * @param mixed $value
      */
-    public function __construct(Interval $key, $value = null)
+    public function __construct(Interval $interval, $value = null)
     {
-        $this->key = $key;
+        $this->interval = $interval;
         $this->value = $value;
     }
 
-    public function getKey(): Interval
+    public function getInterval(): Interval
     {
-        return $this->key;
+        return $this->interval;
     }
 
     /**

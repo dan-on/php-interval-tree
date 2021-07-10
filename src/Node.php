@@ -25,9 +25,9 @@ class Node
     public $color;
 
     /**
-     * @var Item
+     * @var Pair
      */
-    private $item;
+    private $pair;
 
     /** @var null|Interval */
     private $max;
@@ -36,11 +36,11 @@ class Node
     {
     }
 
-    public static function withItem(Item $item): self
+    public static function withPair(Pair $pair): self
     {
         $self = new self();
-        $self->item = $item;
-        $self->max = $self->item->getKey();
+        $self->pair = $pair;
+        $self->max = $self->pair->getInterval();
 
         return $self;
     }
@@ -92,39 +92,39 @@ class Node
         $this->parent = $node;
     }
 
-    public function getItem(): Item
+    public function getPair(): Pair
     {
-        return $this->item;
+        return $this->pair;
     }
 
     public function lessThan(Node $otherNode): bool
     {
-        return $this->item->getKey()->lessThan($otherNode->item->getKey());
+        return $this->getPair()->getInterval()->lessThan($otherNode->getPair()->getInterval());
     }
 
     public function equalTo(Node $otherNode): bool
     {
         $valueEqual = true;
-        if ($this->item->getValue() && $otherNode->item->getValue()) {
-            $valueEqual = $this->item->getValue() === $otherNode->item->getValue();
+        if ($this->getPair()->getValue() && $otherNode->getPair()->getValue()) {
+            $valueEqual = $this->getPair()->getValue() === $otherNode->getPair()->getValue();
         }
-        return $this->item->getKey()->equalTo($otherNode->item->getKey()) && $valueEqual;
+        return $this->getPair()->getInterval()->equalTo($otherNode->getPair()->getInterval()) && $valueEqual;
     }
 
     public function intersect(Node $otherNode): bool
     {
-        return $this->item->getKey()->intersect($otherNode->item->getKey());
+        return $this->getPair()->getInterval()->intersect($otherNode->getPair()->getInterval());
     }
 
-    public function copyItemFrom(Node $otherNode): void
+    public function copyPairFrom(Node $otherNode): void
     {
-        $this->item = clone $otherNode->item;
+        $this->pair = clone $otherNode->getPair();
     }
 
     public function updateMax(): void
     {
         // use key (Interval) max property instead of key.high
-        $this->max = $this->item->getKey()->getMax();
+        $this->max = $this->getPair()->getInterval()->getMax();
 
         if ($this->getRight()->max !== null) {
             $this->max = Interval::comparableMax($this->max, $this->right->max); // static method
@@ -139,14 +139,14 @@ class Node
     {
         //const comparable_less_than = this.item.key.constructor.comparable_less_than;  // static method
         $high = $this->left->max->getHigh() ?? $this->left->max;
-        return Interval::comparableLessThan($high, $searchNode->item->getKey()->getLow());
+        return Interval::comparableLessThan($high, $searchNode->getPair()->getInterval()->getLow());
     }
 
     // Other_node does not intersect right subtree if other_node.item.key.high < this.right.key.low
     public function notIntersectRightSubtree(Node $searchNode): bool
     {
         //const comparable_less_than = this.item.key.constructor.comparable_less_than;  // static method
-        $low = $this->right->max->getLow() ?? $this->right->item->getKey()->getLow();
-        return Interval::comparableLessThan($searchNode->item->getKey()->getHigh(), $low);
+        $low = $this->right->max->getLow() ?? $this->right->getPair()->getInterval()->getLow();
+        return Interval::comparableLessThan($searchNode->getPair()->getInterval()->getHigh(), $low);
     }
 }
