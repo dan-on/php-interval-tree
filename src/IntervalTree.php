@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Danon\IntervalTree;
 
 use Iterator;
-use Traversable;
 
 final class IntervalTree
 {
