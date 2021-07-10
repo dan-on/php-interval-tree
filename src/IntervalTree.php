@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Danon\IntervalTree;
 
-use Generator;
 use Iterator;
+use Traversable;
 
 final class IntervalTree
 {
@@ -29,11 +29,7 @@ final class IntervalTree
      */
     public function getSize(): int
     {
-        $count = 0;
-        $this->treeWalk($this->root, function () use (&$count) {
-            $count++;
-        });
-        return $count;
+        return iterator_count($this->treeWalk());
     }
 
     /**
@@ -50,12 +46,14 @@ final class IntervalTree
      * Iterator of nodes which keys intersect with given interval
      * If no values stored in the tree, returns array of keys which intersect given interval
      * @param Interval $interval
-     * @return Iterator<Node>
+     * @return Iterator
      */
     public function iterateIntersections(Interval $interval): Iterator
     {
         $searchNode = Node::withItem(new Item($interval));
-        yield from $this->treeSearchInterval($this->root, $searchNode);
+        foreach ($this->treeSearchInterval($searchNode) as $node) {
+            yield $node;
+        }
     }
 
     /**
@@ -262,7 +260,6 @@ final class IntervalTree
     private function deleteFixup(Node $fixNode): void
     {
         $currentNode = $fixNode;
-
         while ($currentNode !== $this->root
             && $currentNode->getParent() !== null
             && $currentNode->getColor()->isBlack()) {
@@ -339,25 +336,25 @@ final class IntervalTree
     }
 
     /**
-     * @param Node $node
      * @param Node $searchNode
-     * @param array<Node> $res
-     * @return Generator<Node>
+     * @param Node|null $fromNode
+     * @return Iterator
      */
-    private function treeSearchInterval(Node $node, Node $searchNode, array &$res = []): Generator
+    private function treeSearchInterval(Node $searchNode, Node $fromNode = null): Iterator
     {
-        // if ($node->getLeft() !== $this->nilNode && $node->getLeft()->max >= $low) {
-        if ($node->getLeft() !== $this->nilNode && !$node->notIntersectLeftSubtree($searchNode)) {
-            yield from $this->treeSearchInterval($node->getLeft(), $searchNode, $res);
-        }
-        // if ($low <= $node->getHigh() && $node->getLow() <= $high) {
-        if ($node->intersect($searchNode)) {
-            $res[] = $node;
-            yield $node;
-        }
-        // if ($node->getRight() !== $this->nilNode && $node->getLow() <= $high) {
-        if ($node->getRight() !== $this->nilNode && !$node->notIntersectRightSubtree($searchNode)) {
-            yield from $this->treeSearchInterval($node->getRight(), $searchNode, $res);
+        $fromNode = $fromNode ?? $this->root;
+        $stack = [$fromNode];
+        while (!empty($stack)) {
+            $node = array_pop($stack);
+            if ($node->getLeft() !== $this->nilNode && !$node->notIntersectLeftSubtree($searchNode)) {
+                yield from $this->treeSearchInterval($searchNode, $node->getLeft());
+            }
+            if ($node->intersect($searchNode)) {
+                yield $node;
+            }
+            if ($node->getRight() !== $this->nilNode && !$node->notIntersectRightSubtree($searchNode)) {
+                yield from $this->treeSearchInterval($searchNode, $node->getRight());
+            }
         }
     }
 
@@ -448,12 +445,19 @@ final class IntervalTree
         }
     }
 
-    private function treeWalk(Node $node, callable $action): void
+    private function treeWalk(): Traversable
     {
-        if ($node !== null && $node !== $this->nilNode) {
-            $this->treeWalk($node->getLeft(), $action);
-            $action($node);
-            $this->treeWalk($node->getRight(), $action);
+        $stack = [$this->root];
+        while (count($stack) > 0) {
+            $node = array_pop($stack);
+            if ($node->getLeft() !== $this->nilNode) {
+                $stack[] = $node->getLeft();
+                yield $node->getLeft();
+            }
+            if ($node->getRight() !== $this->nilNode) {
+                $stack[] = $node->getRight();
+                yield $node->getRight();
+            }
         }
     }
 }
