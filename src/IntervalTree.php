@@ -45,7 +45,7 @@ final class IntervalTree
     /**
      * Iterator of nodes which intervals intersect with given interval
      * @param Interval $interval
-     * @return Iterator
+     * @return Iterator<Node>
      */
     public function iterateIntersections(Interval $interval): Iterator
     {
@@ -338,7 +338,7 @@ final class IntervalTree
     /**
      * @param Node $searchNode
      * @param Node|null $fromNode
-     * @return Iterator
+     * @return Iterator<Node>
      */
     private function treeSearchInterval(Node $searchNode, Node $fromNode = null): Iterator
     {
@@ -445,7 +445,10 @@ final class IntervalTree
         }
     }
 
-    private function treeWalk(): Traversable
+    /**
+     * @return Iterator<Node>
+     */
+    private function treeWalk(): Iterator
     {
         $stack = [$this->root];
         while (!empty($stack)) {

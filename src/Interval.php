@@ -29,7 +29,7 @@ final class Interval
 
     /**
      * @param int[] $interval
-     * @return static
+     * @return Interval
      */
     public static function fromArray(array $interval): self
     {
