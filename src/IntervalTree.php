@@ -34,7 +34,7 @@ final class IntervalTree
     /**
      * Returns true if tree is empty
      *
-     * @return boolean
+     * @return bool
      */
     public function isEmpty(): bool
     {
@@ -58,7 +58,7 @@ final class IntervalTree
      * Check that interval has intersections
      *
      * @param Interval $interval
-     * @return boolean
+     * @return bool
      */
     public function hasIntersection(Interval $interval): bool
     {
@@ -366,7 +366,7 @@ final class IntervalTree
         return $nodeMin;
     }
 
-    public function treeSuccessor(Node $node): ?Node
+    private function treeSuccessor(Node $node): ?Node
     {
         if ($node->getRight() !== $this->nilNode) {
             $nodeSuccessor = $this->localMinimum($node->getRight());

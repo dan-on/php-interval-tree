@@ -22,14 +22,16 @@ class Node
     /**
      * @var NodeColor
      */
-    public $color;
+    private $color;
 
     /**
      * @var Pair
      */
     private $pair;
 
-    /** @var null|Interval */
+    /**
+     * @var null|Interval
+     */
     private $max;
 
     private function __construct()
@@ -47,7 +49,7 @@ class Node
 
     public static function nil(): self
     {
-        $self = new self;
+        $self = new self();
         $self->color = NodeColor::black();
         return $self;
     }
@@ -136,16 +138,15 @@ class Node
     // Other_node does not intersect any node of left subtree, if this.left.max < other_node.item.key.low
     public function notIntersectLeftSubtree(Node $searchNode): bool
     {
-        //const comparable_less_than = this.item.key.constructor.comparable_less_than;  // static method
-        $high = $this->left->max->getHigh() ?? $this->left->max;
-        return Interval::comparableLessThan($high, $searchNode->getPair()->getInterval()->getLow());
+        $high = $this->getLeft()->max->getHigh() ?? $this->getLeft()->getPair()->getInterval()->getHigh();
+        return $high < $searchNode->getPair()->getInterval()->getLow();
     }
 
     // Other_node does not intersect right subtree if other_node.item.key.high < this.right.key.low
     public function notIntersectRightSubtree(Node $searchNode): bool
     {
         //const comparable_less_than = this.item.key.constructor.comparable_less_than;  // static method
-        $low = $this->right->max->getLow() ?? $this->right->getPair()->getInterval()->getLow();
-        return Interval::comparableLessThan($searchNode->getPair()->getInterval()->getHigh(), $low);
+        $low = $this->right->max->getLow() ?? $this->getRight()->getPair()->getInterval()->getLow();
+        return $searchNode->getPair()->getInterval()->getHigh() < $low;
     }
 }
