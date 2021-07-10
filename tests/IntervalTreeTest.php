@@ -78,4 +78,10 @@ final class IntervalTreeTest extends TestCase
         self::assertFalse($this->tree->remove(Interval::fromArray([7, 12]), '7-12'));
         self::assertEquals($this->tree->getSize(), $initialSize);
     }
+
+    public function testIsEmpty(): void
+    {
+        self::assertTrue((new IntervalTree())->isEmpty());
+        self::assertFalse($this->tree->isEmpty());
+    }
 }
