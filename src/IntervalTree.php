@@ -448,7 +448,7 @@ final class IntervalTree
     private function treeWalk(): Traversable
     {
         $stack = [$this->root];
-        while (count($stack) > 0) {
+        while (!empty($stack)) {
             $node = array_pop($stack);
             if ($node->getLeft() !== $this->nilNode) {
                 $stack[] = $node->getLeft();
