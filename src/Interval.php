@@ -78,18 +78,6 @@ final class Interval
         );
     }
 
-    /**
-     * Function returns maximum between two comparable values
-     *
-     * @param Interval $interval1
-     * @param Interval $interval2
-     * @return Interval
-     */
-    public static function comparableMax(Interval $interval1, Interval $interval2): self
-    {
-        return $interval1->merge($interval2);
-    }
-
     public function getMax(): Interval
     {
         return $this;

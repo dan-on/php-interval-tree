@@ -126,10 +126,10 @@ class Node
         $this->max = $this->getPair()->getInterval()->getMax();
 
         if ($this->getRight()->max !== null) {
-            $this->max = Interval::comparableMax($this->max, $this->right->max);
+            $this->max = $this->max->merge($this->getRight()->max);
         }
         if ($this->left->max !== null) {
-            $this->max = Interval::comparableMax($this->max, $this->left->max);
+            $this->max = $this->max->merge($this->getLeft()->max);
         }
     }
 
