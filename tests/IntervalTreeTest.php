@@ -32,7 +32,7 @@ final class IntervalTreeTest extends TestCase
     {
         $checkInterval = [2, 3];
         $overlappingIntervals = [[0, 2], [0, 2], [0, 3], [1, 4], [2, 3], [3, 4]];
-        $intersections = $this->tree->iterateIntersections(Interval::fromArray($checkInterval));
+        $intersections = $this->tree->findIntersections(Interval::fromArray($checkInterval));
         foreach ($intersections as $index => $node) {
             $overlappingInterval = Interval::fromArray($overlappingIntervals[$index]);
             $overlappingValue = implode('-', $overlappingIntervals[$index]);
