@@ -126,27 +126,23 @@ class Node
     public function updateMax(): void
     {
         $this->max = $this->getPair()->getInterval();
-
         if ($this->getRight()->max !== null) {
             $this->max = $this->max->merge($this->getRight()->max);
         }
-        if ($this->left->max !== null) {
+        if ($this->getLeft()->max !== null) {
             $this->max = $this->max->merge($this->getLeft()->max);
         }
     }
 
-    // Other_node does not intersect any node of left subtree, if this.left.max < other_node.item.key.low
     public function notIntersectLeftSubtree(Node $searchNode): bool
     {
         $high = $this->getLeft()->max->getHigh() ?? $this->getLeft()->getPair()->getInterval()->getHigh();
         return $high < $searchNode->getPair()->getInterval()->getLow();
     }
 
-    // Other_node does not intersect right subtree if other_node.item.key.high < this.right.key.low
     public function notIntersectRightSubtree(Node $searchNode): bool
     {
-        //const comparable_less_than = this.item.key.constructor.comparable_less_than;  // static method
-        $low = $this->right->max->getLow() ?? $this->getRight()->getPair()->getInterval()->getLow();
+        $low = $this->getRight()->max->getLow() ?? $this->getRight()->getPair()->getInterval()->getLow();
         return $searchNode->getPair()->getInterval()->getHigh() < $low;
     }
 }

@@ -180,7 +180,7 @@ final class IntervalTree
                     $currentNode->getParent()->setColor(NodeColor::black());
                     $uncleNode->setColor(NodeColor::black());
                     $grandfather->setColor(NodeColor::red());
-                    $currentNode = $currentNode->getParent()->getParent();
+                    $currentNode = $grandfather;
                 } else {
                     if ($currentNode === $currentNode->getParent()->getRight()) {
                         $currentNode = $currentNode->getParent();
@@ -188,16 +188,15 @@ final class IntervalTree
                     }
                     $currentNode->getParent()->setColor(NodeColor::black());
                     $grandfather->setColor(NodeColor::red());
-                    $this->rotateRight($currentNode->getParent()->getParent());
+                    $this->rotateRight($grandfather);
                 }
             } else {
-                $grandfather = $currentNode->getParent()->getParent();
                 $uncleNode = $grandfather->getLeft();
                 if ($uncleNode->getColor()->isRed()) {
                     $currentNode->getParent()->setColor(NodeColor::black());
                     $uncleNode->setColor(NodeColor::black());
                     $grandfather->setColor(NodeColor::red());
-                    $currentNode = $currentNode->getParent()->getParent();
+                    $currentNode = $grandfather;
                 } else {
                     if ($currentNode === $currentNode->getParent()->getLeft()) {
                         $currentNode = $currentNode->getParent();
@@ -205,7 +204,7 @@ final class IntervalTree
                     }
                     $currentNode->getParent()->setColor(NodeColor::black());
                     $grandfather->setColor(NodeColor::red());
-                    $this->rotateLeft($currentNode->getParent()->getParent());
+                    $this->rotateLeft($grandfather);
                 }
             }
         }
@@ -385,7 +384,6 @@ final class IntervalTree
     private function rotateLeft(Node $x): void
     {
         $y = $x->getRight();
-
         $x->setRight($y->getLeft()); // b goes to x.right
 
         if ($y->getLeft() !== $this->nilNode) {
@@ -449,7 +447,10 @@ final class IntervalTree
      */
     private function treeWalk(): Iterator
     {
-        $stack = [$this->root];
+        if ($this->root !== null) {
+            $stack = [$this->root];
+            yield $this->root;
+        }
         while (!empty($stack)) {
             $node = array_pop($stack);
             if ($node->getLeft() !== $this->nilNode) {
