@@ -59,6 +59,7 @@ final class IntervalTreeTest extends TestCase
     public function testRemove(): void
     {
         $initialSize = $this->tree->getSize();
+        self::assertEquals(count($this->intervals), $initialSize);
         self::assertTrue($this->tree->remove(Interval::fromArray([7, 8]), '7-8'));
         self::assertEquals($this->tree->getSize(), --$initialSize);
         self::assertFalse($this->tree->remove(Interval::fromArray([1, 4]), '1-3'));
