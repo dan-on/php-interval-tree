@@ -341,18 +341,14 @@ final class IntervalTree
     private function treeSearchInterval(Node $searchNode, Node $fromNode = null): Iterator
     {
         $fromNode = $fromNode ?? $this->root;
-        $stack = [$fromNode];
-        while (!empty($stack)) {
-            $node = array_pop($stack);
-            if ($node->getLeft() !== $this->nilNode && !$node->notIntersectLeftSubtree($searchNode)) {
-                yield from $this->treeSearchInterval($searchNode, $node->getLeft());
-            }
-            if ($node->intersect($searchNode)) {
-                yield $node;
-            }
-            if ($node->getRight() !== $this->nilNode && !$node->notIntersectRightSubtree($searchNode)) {
-                yield from $this->treeSearchInterval($searchNode, $node->getRight());
-            }
+        if ($fromNode->getLeft() !== $this->nilNode && !$fromNode->notIntersectLeftSubtree($searchNode)) {
+            yield from $this->treeSearchInterval($searchNode, $fromNode->getLeft());
+        }
+        if ($fromNode->intersect($searchNode)) {
+            yield $fromNode;
+        }
+        if ($fromNode->getRight() !== $this->nilNode && !$fromNode->notIntersectRightSubtree($searchNode)) {
+            yield from $this->treeSearchInterval($searchNode, $fromNode->getRight());
         }
     }
 
@@ -445,7 +441,7 @@ final class IntervalTree
     /**
      * @return Iterator<Node>
      */
-    private function treeWalk(): Iterator
+    public function treeWalk(): Iterator
     {
         if ($this->root !== null) {
             $stack = [$this->root];

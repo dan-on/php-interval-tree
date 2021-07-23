@@ -132,6 +132,9 @@ class Node
         if ($this->getLeft()->max !== null) {
             $this->max = $this->max->merge($this->getLeft()->max);
         }
+        if ($this->getParent() !== null) {
+            $this->getParent()->updateMax();
+        }
     }
 
     public function notIntersectLeftSubtree(Node $searchNode): bool
