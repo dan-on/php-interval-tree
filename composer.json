@@ -22,6 +22,7 @@
         "phpunit/phpunit": "^9",
         "phpstan/phpstan": "^0.12.91",
         "vimeo/psalm": "^4.8",
-        "nunomaduro/phpinsights": "^2.0"
+        "nunomaduro/phpinsights": "^2.0",
+        "phpbench/phpbench": "^1.0"
     }
 }
