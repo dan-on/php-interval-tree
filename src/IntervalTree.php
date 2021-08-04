@@ -94,6 +94,7 @@ final class IntervalTree
         $insertNode->setColor(NodeColor::red());
 
         $this->treeInsert($insertNode);
+        $insertNode->updateMax();
         $this->recalculateMax($insertNode);
         return $insertNode;
     }
@@ -208,7 +209,6 @@ final class IntervalTree
                 }
             }
         }
-
         $this->root->setColor(NodeColor::black());
     }
 
