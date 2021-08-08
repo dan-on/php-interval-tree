@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Danon\IntervalTree;
 
+use Danon\IntervalTree\Interval\IntervalInterface;
 use Iterator;
 
 final class IntervalTree
@@ -43,10 +44,10 @@ final class IntervalTree
 
     /**
      * Find nodes which intervals intersect with given interval
-     * @param Interval $interval
+     * @param IntervalInterface $interval
      * @return Iterator<Node>
      */
-    public function findIntersections(Interval $interval): Iterator
+    public function findIntersections(IntervalInterface $interval): Iterator
     {
         $searchNode = Node::withPair(new Pair($interval));
         foreach ($this->treeSearchInterval($searchNode) as $node) {
@@ -57,10 +58,10 @@ final class IntervalTree
     /**
      * Check that interval has intersections
      *
-     * @param Interval $interval
+     * @param IntervalInterface $interval
      * @return bool
      */
-    public function hasIntersection(Interval $interval): bool
+    public function hasIntersection(IntervalInterface $interval): bool
     {
         $nodes = $this->findIntersections($interval);
         return $nodes->current() !== null;
@@ -69,10 +70,10 @@ final class IntervalTree
     /**
      * Count intervals that has intersections
      *
-     * @param Interval $interval
+     * @param IntervalInterface $interval
      * @return int
      */
-    public function countIntersections(Interval $interval): int
+    public function countIntersections(IntervalInterface $interval): int
     {
         $nodes = $this->findIntersections($interval);
         return iterator_count($nodes);
@@ -81,11 +82,11 @@ final class IntervalTree
     /**
      * Insert new pair (interval + value) into interval tree
      *
-     * @param Interval $interval
+     * @param IntervalInterface $interval
      * @param mixed $value
      * @return Node
      */
-    public function insert(Interval $interval, $value = null): Node
+    public function insert(IntervalInterface $interval, $value = null): Node
     {
         $insertNode = Node::withPair(new Pair($interval, $value));
         $insertNode->setLeft($this->nilNode);
@@ -101,22 +102,22 @@ final class IntervalTree
 
     /**
      * Returns true if interval and value exist in the tree
-     * @param Interval $interval
+     * @param IntervalInterface $interval
      * @param mixed $value
      * @return bool
      */
-    public function exist(Interval $interval, $value): bool
+    public function exist(IntervalInterface $interval, $value): bool
     {
         $searchNode = Node::withPair(new Pair($interval, $value));
         return $this->treeSearch($this->root, $searchNode) !== null;
     }
 
     /**
-     * @param Interval $interval
+     * @param IntervalInterface $interval
      * @param mixed $value
      * @return bool
      */
-    public function remove(Interval $interval, $value): bool
+    public function remove(IntervalInterface $interval, $value): bool
     {
         $searchNode = Node::withPair(new Pair($interval, $value));
         $deleteNode = $this->treeSearch($this->root, $searchNode);

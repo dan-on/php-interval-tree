@@ -2,6 +2,8 @@
 
 namespace Danon\IntervalTree;
 
+use Danon\IntervalTree\Interval\IntervalInterface;
+
 class Node
 {
     /**
@@ -30,7 +32,7 @@ class Node
     private $pair;
 
     /**
-     * @var null|Interval
+     * @var null|IntervalInterface
      */
     private $max;
 

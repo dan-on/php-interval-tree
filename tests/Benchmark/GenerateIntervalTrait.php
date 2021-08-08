@@ -3,15 +3,15 @@ declare(strict_types=1);
 
 namespace Danon\IntervalTree\Tests\Benchmark;
 
-use Danon\IntervalTree\Interval;
+use Danon\IntervalTree\Interval\IntegerInterval;
 use Exception;
 
 trait GenerateIntervalTrait
 {
     /**
-     * @return Interval
+     * @return IntegerInterval
      */
-    private function generateInterval(): Interval
+    private function generateInterval(): IntegerInterval
     {
         try {
             $low = random_int(0, self::MAX_INTERVAL_HIGH);
@@ -20,6 +20,6 @@ trait GenerateIntervalTrait
             echo 'Cannot generate interval: ' . $exception->getMessage();
             exit;
         }
-        return new Interval($low, $high);
+        return new IntegerInterval($low, $high);
     }
 }

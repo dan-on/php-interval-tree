@@ -3,25 +3,27 @@ declare(strict_types=1);
 
 namespace Danon\IntervalTree;
 
+use Danon\IntervalTree\Interval\IntervalInterface;
+
 final class Pair
 {
-    /** @var Interval  */
+    /** @var IntervalInterface */
     private $interval;
 
     /** @var mixed */
     private $value;
 
     /**
-     * @param Interval $interval
+     * @param IntervalInterface $interval
      * @param mixed $value
      */
-    public function __construct(Interval $interval, $value = null)
+    public function __construct(IntervalInterface $interval, $value = null)
     {
         $this->interval = $interval;
         $this->value = $value;
     }
 
-    public function getInterval(): Interval
+    public function getInterval(): IntervalInterface
     {
         return $this->interval;
     }
