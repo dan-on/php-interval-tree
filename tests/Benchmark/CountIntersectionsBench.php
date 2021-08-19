@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Danon\IntervalTree\Tests\Benchmark;
 
-use Danon\IntervalTree\Interval\IntegerInterval;
+use Danon\IntervalTree\Interval\NumericInterval;
 use Danon\IntervalTree\IntervalTree;
 use PhpBench\Benchmark\Metadata\Annotations\Revs;
 
@@ -24,7 +24,7 @@ class CountIntersectionsBench
     private $tree;
 
     /**
-     * @var IntegerInterval[]
+     * @var NumericInterval[]
      */
     private $bruteForceList;
 

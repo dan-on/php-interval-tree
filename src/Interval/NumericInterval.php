@@ -6,22 +6,22 @@ namespace Danon\IntervalTree\Interval;
 use InvalidArgumentException;
 use function count;
 
-final class IntegerInterval implements IntervalInterface
+final class NumericInterval implements IntervalInterface
 {
     /**
-     * @var int
+     * @var int|float
      */
     private $low;
 
     /**
-     * @var int
+     * @var int|float
      */
     private $high;
 
     /**
      * IntegerInterval constructor
-     * @param int $low
-     * @param int $high
+     * @param int|float $low
+     * @param int|float $high
      */
     public function __construct($low, $high)
     {
@@ -35,9 +35,9 @@ final class IntegerInterval implements IntervalInterface
 
     /**
      * @param int[] $interval
-     * @return IntegerInterval
+     * @return NumericInterval
      */
-    public static function fromArray($interval): IntegerInterval
+    public static function fromArray($interval): NumericInterval
     {
         if (count($interval) !== 2) {
             throw new InvalidArgumentException('Wrong interval array');
@@ -45,18 +45,24 @@ final class IntegerInterval implements IntervalInterface
         return new self($interval[0], $interval[1]);
     }
 
-    public function getLow(): int
+    /**
+     * @return int|float
+     */
+    public function getLow()
     {
         return $this->low;
     }
 
-    public function getHigh(): int
+    /**
+     * @return int|float
+     */
+    public function getHigh()
     {
         return $this->high;
     }
 
     /**
-     * @param IntegerInterval $otherInterval
+     * @param NumericInterval $otherInterval
      * @return bool
      */
     public function equalTo($otherInterval): bool
@@ -65,7 +71,7 @@ final class IntegerInterval implements IntervalInterface
     }
 
     /**
-     * @param IntegerInterval $otherInterval
+     * @param NumericInterval $otherInterval
      * @return bool
      */
     public function lessThan($otherInterval): bool
@@ -75,7 +81,7 @@ final class IntegerInterval implements IntervalInterface
     }
 
     /**
-     * @param IntegerInterval $otherInterval
+     * @param NumericInterval $otherInterval
      * @return bool
      */
     public function intersect($otherInterval): bool
@@ -84,12 +90,12 @@ final class IntegerInterval implements IntervalInterface
     }
 
     /**
-     * @param IntegerInterval $otherInterval
-     * @return IntegerInterval
+     * @param NumericInterval $otherInterval
+     * @return NumericInterval
      */
-    public function merge($otherInterval): IntegerInterval
+    public function merge($otherInterval): NumericInterval
     {
-        return new IntegerInterval(
+        return new NumericInterval(
             min($this->getLow(), $otherInterval->getLow()),
             max($this->getHigh(), $otherInterval->getHigh())
         );

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Danon\IntervalTree\Tests\Benchmark;
 
-use Danon\IntervalTree\Interval\IntegerInterval;
+use Danon\IntervalTree\Interval\NumericInterval;
 use Danon\IntervalTree\IntervalTree;
 use Exception;
 use PhpBench\Benchmark\Metadata\Annotations\Revs;
@@ -25,7 +25,7 @@ class HasIntersectionBench
     private $tree;
 
     /**
-     * @var IntegerInterval[]
+     * @var NumericInterval[]
      */
     private $bruteForceList;
 
@@ -64,9 +64,9 @@ class HasIntersectionBench
     }
 
     /**
-     * @return IntegerInterval
+     * @return NumericInterval
      */
-    private function generateInterval(): IntegerInterval
+    private function generateInterval(): NumericInterval
     {
         try {
             $low = random_int(0, self::MAX_INTERVAL_HIGH);
@@ -75,6 +75,6 @@ class HasIntersectionBench
             echo 'Cannot generate interval: ' . $exception->getMessage();
             exit;
         }
-        return new IntegerInterval($low, $high);
+        return new NumericInterval($low, $high);
     }
 }
