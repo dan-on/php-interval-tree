@@ -1,10 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Danon\IntervalTree\Interval;
 
 use DateTimeInterface;
 use InvalidArgumentException;
+
 use function count;
 
 final class DateTimeInterval implements IntervalInterface

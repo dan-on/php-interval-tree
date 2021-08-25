@@ -1,9 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Danon\IntervalTree\Interval;
 
 use InvalidArgumentException;
+
 use function count;
 
 final class NumericInterval implements IntervalInterface
@@ -19,7 +21,7 @@ final class NumericInterval implements IntervalInterface
     private $high;
 
     /**
-     * IntegerInterval constructor
+     * NumericInterval constructor
      * @param int|float $low
      * @param int|float $high
      */

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Danon\IntervalTree;
@@ -167,8 +168,10 @@ final class IntervalTree
     }
 
     /**
-     * After insertion insert_node may have red-colored parent, and this is a single possible violation
+     * After insertion insert_node may have red-colored parent
+     * And this is a single possible violation
      * Go upwards to the root and re-color until violation will be resolved
+     *
      * @param Node $insertNode
      */
     private function insertFixup(Node $insertNode): void
@@ -259,9 +262,11 @@ final class IntervalTree
     private function deleteFixup(Node $fixNode): void
     {
         $currentNode = $fixNode;
-        while ($currentNode !== $this->root
+        while (
+            $currentNode !== $this->root
             && $currentNode->getParent() !== null
-            && $currentNode->getColor()->isBlack()) {
+            && $currentNode->getColor()->isBlack()
+        ) {
             if ($currentNode === $currentNode->getParent()->getLeft()) {
                 $brotherNode = $currentNode->getParent()->getRight();
                 if ($brotherNode->getColor()->isRed()) {
