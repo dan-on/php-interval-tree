@@ -4,7 +4,7 @@ namespace Danon\IntervalTree;
 
 use Danon\IntervalTree\Interval\IntervalInterface;
 
-class Node
+final class Node
 {
     /**
      * @var Node
