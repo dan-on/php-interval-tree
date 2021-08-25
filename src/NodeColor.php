@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Danon\IntervalTree;
 
-class NodeColor
+final class NodeColor
 {
     public const COLOR_RED = 0;
     public const COLOR_BLACK = 1;
