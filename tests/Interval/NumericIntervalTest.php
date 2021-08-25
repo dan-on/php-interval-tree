@@ -7,7 +7,10 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Danon\IntervalTree\Interval\NumericInterval;
 
-final class IntegerIntervalTest extends TestCase
+/**
+ * @covers \Danon\IntervalTree\Interval\NumericInterval
+ */
+final class NumericIntervalTest extends TestCase
 {
     public function testConstruct(): void
     {

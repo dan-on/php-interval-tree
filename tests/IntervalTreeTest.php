@@ -7,6 +7,9 @@ use Danon\IntervalTree\Interval\NumericInterval;
 use Danon\IntervalTree\IntervalTree;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \Danon\IntervalTree\IntervalTree
+ */
 final class IntervalTreeTest extends TestCase
 {
     /** @var IntervalTree  */
@@ -28,7 +31,13 @@ final class IntervalTreeTest extends TestCase
         parent::setUp();
     }
 
-    public function testFindAllIntersections(): void
+    /**
+     * @uses \Danon\IntervalTree\Interval\NumericInterval
+     * @uses \Danon\IntervalTree\Node
+     * @uses \Danon\IntervalTree\NodeColor
+     * @uses \Danon\IntervalTree\Pair
+     */
+    public function testFindIntersections(): void
     {
         $checkInterval = [2, 3];
         $overlappingIntervals = [[0, 2], [0, 2], [0, 3], [1, 4], [2, 3], [3, 4]];
@@ -44,6 +53,12 @@ final class IntervalTreeTest extends TestCase
         }
     }
 
+    /**
+     * @uses \Danon\IntervalTree\Interval\NumericInterval
+     * @uses \Danon\IntervalTree\Node
+     * @uses \Danon\IntervalTree\NodeColor
+     * @uses \Danon\IntervalTree\Pair
+     */
     public function testFindAnyIntersection(): void
     {
         self::assertTrue($this->tree->hasIntersection(NumericInterval::fromArray([2, 3])));
@@ -59,6 +74,12 @@ final class IntervalTreeTest extends TestCase
         self::assertFalse($this->tree->hasIntersection(NumericInterval::fromArray([6, 6])));
     }
 
+    /**
+     * @uses \Danon\IntervalTree\Interval\NumericInterval
+     * @uses \Danon\IntervalTree\Node
+     * @uses \Danon\IntervalTree\NodeColor
+     * @uses \Danon\IntervalTree\Pair
+     */
     public function testRemove(): void
     {
         $initialSize = $this->tree->getSize();
@@ -83,6 +104,12 @@ final class IntervalTreeTest extends TestCase
         self::assertEquals($this->tree->getSize(), $initialSize);
     }
 
+    /**
+     * @uses \Danon\IntervalTree\Interval\NumericInterval
+     * @uses \Danon\IntervalTree\Node
+     * @uses \Danon\IntervalTree\NodeColor
+     * @uses \Danon\IntervalTree\Pair
+     */
     public function testIsEmpty(): void
     {
         self::assertTrue((new IntervalTree())->isEmpty());

@@ -8,7 +8,10 @@ use DateTime;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-class DateTimeIntervalTest extends TestCase
+/**
+ * @covers \Danon\IntervalTree\Interval\DateTimeInterval
+ */
+final class DateTimeIntervalTest extends TestCase
 {
     public function testConstruct(): void
     {
