@@ -26,5 +26,9 @@
         "phpbench/phpbench": "^1.0",
         "squizlabs/php_codesniffer": "^3.6",
         "phpmd/phpmd": "^2.10"
+    },
+    "scripts": {
+        "tests": "./vendor/bin/phpunit",
+        "rules": "./vendor/bin/phpcs && ./vendor/bin/psalm && ./vendor/bin/phpstan && ./vendor/bin/phpmd src text phpmd.ruleset.xml"
     }
 }
