@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Danon\IntervalTree\Tests;
@@ -12,16 +13,17 @@ use PHPUnit\Framework\TestCase;
  */
 final class IntervalTreeTest extends TestCase
 {
+    private const TREE_INTERVALS = [
+        [7, 8], [1, 4], [2, 3], [7, 12], [1, 1], [3, 4], [7, 7], [0, 2], [0, 2], [0, 3], [9, 12]
+    ];
+
     /** @var IntervalTree  */
     private $tree;
-
-    /** @var array<array<int>> */
-    private $intervals = [[7, 8], [1, 4], [2, 3], [7, 12], [1, 1], [3, 4], [7, 7], [0, 2], [0, 2], [0, 3], [9, 12]];
 
     public function setUp(): void
     {
         $this->tree = new IntervalTree();
-        foreach ($this->intervals as $interval) {
+        foreach (self::TREE_INTERVALS as $interval) {
             $value = implode('-', $interval);
             $this->tree->insert(
                 NumericInterval::fromArray($interval),
@@ -83,7 +85,7 @@ final class IntervalTreeTest extends TestCase
     public function testRemove(): void
     {
         $initialSize = $this->tree->getSize();
-        self::assertEquals(count($this->intervals), $initialSize);
+        self::assertEquals(count(self::TREE_INTERVALS), $initialSize);
         self::assertTrue($this->tree->remove(NumericInterval::fromArray([7, 8]), '7-8'));
         self::assertEquals($this->tree->getSize(), --$initialSize);
         self::assertFalse($this->tree->remove(NumericInterval::fromArray([1, 4]), '1-3'));
