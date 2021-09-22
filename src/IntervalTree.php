@@ -85,9 +85,8 @@ final class IntervalTree
      *
      * @param IntervalInterface $interval
      * @param mixed $value
-     * @return Node
      */
-    public function insert(IntervalInterface $interval, $value = null): Node
+    public function insert(IntervalInterface $interval, $value = null): void
     {
         $insertNode = Node::withPair(new Pair($interval, $value));
         $insertNode->setLeft($this->nilNode);
@@ -98,7 +97,6 @@ final class IntervalTree
         $this->treeInsert($insertNode);
         $insertNode->updateMax();
         $this->recalculateMax($insertNode);
-        return $insertNode;
     }
 
     /**
