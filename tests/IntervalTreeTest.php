@@ -44,14 +44,14 @@ final class IntervalTreeTest extends TestCase
         $checkInterval = [2, 3];
         $overlappingIntervals = [[0, 2], [0, 2], [0, 3], [1, 4], [2, 3], [3, 4]];
         $intersections = $this->tree->findIntersections(NumericInterval::fromArray($checkInterval));
-        foreach ($intersections as $index => $node) {
+        foreach ($intersections as $index => $pair) {
             $overlappingInterval = NumericInterval::fromArray($overlappingIntervals[$index]);
             $overlappingValue = implode('-', $overlappingIntervals[$index]);
             self::assertTrue($overlappingInterval->equalTo(NumericInterval::fromArray([
-                $node->getPair()->getInterval()->getLow(),
-                $node->getPair()->getInterval()->getHigh(),
+                $pair->getInterval()->getLow(),
+                $pair->getInterval()->getHigh(),
             ])));
-            self::assertEquals($overlappingValue, $node->getPair()->getValue());
+            self::assertEquals($overlappingValue, $pair->getValue());
         }
     }
 

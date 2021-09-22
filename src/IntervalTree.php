@@ -46,13 +46,13 @@ final class IntervalTree
     /**
      * Find nodes which intervals intersect with given interval
      * @param IntervalInterface $interval
-     * @return Iterator<Node>
+     * @return Iterator<Pair>
      */
     public function findIntersections(IntervalInterface $interval): Iterator
     {
         $searchNode = Node::withPair(new Pair($interval));
         foreach ($this->treeSearchInterval($searchNode) as $node) {
-            yield $node;
+            yield $node->getPair();
         }
     }
 
