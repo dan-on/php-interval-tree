@@ -45,6 +45,7 @@ final class IntervalTree
 
     /**
      * Find nodes which intervals intersect with given interval
+     *
      * @param IntervalInterface $interval
      * @return Iterator<Pair>
      */
@@ -101,6 +102,7 @@ final class IntervalTree
 
     /**
      * Returns true if interval and value exist in the tree
+     *
      * @param IntervalInterface $interval
      * @param mixed $value
      * @return bool
@@ -112,6 +114,8 @@ final class IntervalTree
     }
 
     /**
+     * Remove node from tree by interval and value
+     *
      * @param IntervalInterface $interval
      * @param mixed $value
      * @return bool
