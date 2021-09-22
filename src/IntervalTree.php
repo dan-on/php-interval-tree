@@ -44,7 +44,7 @@ final class IntervalTree
     }
 
     /**
-     * Find nodes which intervals intersect with given interval
+     * Find pairs which intervals intersect with given interval
      *
      * @param IntervalInterface $interval
      * @return Iterator<Pair>
@@ -58,7 +58,7 @@ final class IntervalTree
     }
 
     /**
-     * Check that interval has intersections
+     * Returns true if interval has at least one intersection in tree
      *
      * @param IntervalInterface $interval
      * @return bool
