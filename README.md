@@ -23,39 +23,6 @@ composer require dan-on/php-interval-tree
 
 ## Usage
 
-### Intervals
-
-There are numeric and DateTimeInterface-based interval types included.
-
-#### Numeric interval
-
-```php
-use Danon\IntervalTree\Interval\NumericInterval;
-
-// Instantiate numeric interval from array
-$numericInterval = NumericInterval::fromArray([1, 100]);
-
-// Instantiate numeric interval with constructor
-$numericInterval = new NumericInterval(1, 100);
-```
-
-#### DateTime interval
-```php
-use Danon\IntervalTree\Interval\DateTimeInterval;
-
-// Instantiate DateTime interval from array
-$dateTimeInterval = DateTimeInterval::fromArray([
-    new DateTimeImmutable('2021-01-01 00:00:00'),
-    new DateTimeImmutable('2021-01-02 00:00:00'),
-]);
-
-// Instantiate DateTime interval with constructor
-$dateTimeInterval = new DateTimeInterval(
-    new DateTimeImmutable('2021-01-01 00:00:00'), 
-    new DateTimeImmutable('2021-01-02 00:00:00')
-);
-```
-
 ### Interval Tree
 
 #### insert(IntervalInterface $interval, mixed $value): void
@@ -87,7 +54,7 @@ $tree->hasIntersection(new NumericInterval(3, 5)); // true
 ```
 
 #### countIntersections(IntervalInterface $interval): int
-Count intervals that has intersections
+Count intersections given interval in tree
 ```php
 $tree->countIntersections(new NumericInterval(3, 5)); // 2
 ```
@@ -111,9 +78,42 @@ $tree->isEmpty(); // false
 ```
 
 #### getSize(): int
-Returns number of items stored in the interval tree
+Get number of items stored in the interval tree
 ```php
 $tree->getSize(); // 3
+```
+
+### Intervals
+
+There are numeric and DateTimeInterface-based interval types included.
+
+#### Numeric interval
+
+```php
+use Danon\IntervalTree\Interval\NumericInterval;
+
+// Instantiate numeric interval from array
+$numericInterval = NumericInterval::fromArray([1, 100]);
+
+// Instantiate numeric interval with constructor
+$numericInterval = new NumericInterval(1, 100);
+```
+
+#### DateTime interval
+```php
+use Danon\IntervalTree\Interval\DateTimeInterval;
+
+// Instantiate DateTime interval from array
+$dateTimeInterval = DateTimeInterval::fromArray([
+    new DateTimeImmutable('2021-01-01 00:00:00'),
+    new DateTimeImmutable('2021-01-02 00:00:00'),
+]);
+
+// Instantiate DateTime interval with constructor
+$dateTimeInterval = new DateTimeInterval(
+    new DateTimeImmutable('2021-01-01 00:00:00'), 
+    new DateTimeImmutable('2021-01-02 00:00:00')
+);
 ```
 
 ## Tests
