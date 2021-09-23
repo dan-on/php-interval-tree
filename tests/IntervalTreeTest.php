@@ -1,82 +1,120 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
+
+namespace Danon\IntervalTree\Tests;
+
+use Danon\IntervalTree\Interval\NumericInterval;
 use Danon\IntervalTree\IntervalTree;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \Danon\IntervalTree\IntervalTree
+ */
 final class IntervalTreeTest extends TestCase
 {
-    public function testCanBeCreatedWithEmptyConstructor(): void
+    private const TREE_INTERVALS = [
+        [7, 8], [1, 4], [2, 3], [7, 12], [1, 1], [3, 4], [7, 7], [0, 2], [0, 2], [0, 3], [9, 12]
+    ];
+
+    /** @var IntervalTree  */
+    private $tree;
+
+    public function setUp(): void
     {
-        $this->assertInstanceOf(
-            IntervalTree::class,
-            new IntervalTree
-        );
+        $this->tree = new IntervalTree();
+        foreach (self::TREE_INTERVALS as $interval) {
+            $value = implode('-', $interval);
+            $this->tree->insert(
+                NumericInterval::fromArray($interval),
+                $value
+            );
+        }
+        parent::setUp();
     }
 
-    public function testFindAllIntervalsIntersection(): void
+    /**
+     * @uses \Danon\IntervalTree\Interval\NumericInterval
+     * @uses \Danon\IntervalTree\Node
+     * @uses \Danon\IntervalTree\NodeColor
+     * @uses \Danon\IntervalTree\Pair
+     */
+    public function testFindIntersections(): void
     {
-        $intervals = [[6, 8], [1, 4], [2, 3], [5, 12], [1, 1], [3, 5], [5, 7], [9, 15], [6, 18], [22, 344]];
-        $tree = new IntervalTree();
-        for ($i = 0; $i < count($intervals); $i++) {
-            $tree->insert($intervals[$i], $i);
+        $checkInterval = [2, 3];
+        $overlappingIntervals = [[0, 2], [0, 2], [0, 3], [1, 4], [2, 3], [3, 4]];
+        $intersections = $this->tree->findIntersections(NumericInterval::fromArray($checkInterval));
+        foreach ($intersections as $index => $pair) {
+            $overlappingInterval = NumericInterval::fromArray($overlappingIntervals[$index]);
+            $overlappingValue = implode('-', $overlappingIntervals[$index]);
+            self::assertTrue($overlappingInterval->equalTo(NumericInterval::fromArray([
+                $pair->getInterval()->getLow(),
+                $pair->getInterval()->getHigh(),
+            ])));
+            self::assertEquals($overlappingValue, $pair->getValue());
         }
-
-        $nodesInRange = $tree->iterateIntersections([2, 3]);
-        $intersectedIntervalIndexes = [];
-        foreach ($nodesInRange as $node) {
-            $intersectedIntervalIndexes[] = $node->getValue();
-        }
-
-        $this->assertEquals($intersectedIntervalIndexes, [1, 2, 5]);
     }
 
-    public function testHasIntersection(): void
+    /**
+     * @uses \Danon\IntervalTree\Interval\NumericInterval
+     * @uses \Danon\IntervalTree\Node
+     * @uses \Danon\IntervalTree\NodeColor
+     * @uses \Danon\IntervalTree\Pair
+     */
+    public function testFindAnyIntersection(): void
     {
-        $intervals = [[0, 0], [6, 8], [1, 4], [2, 3], [5, 12], [1, 1], [3, 5], [5, 7]];
-        $tree = new IntervalTree();
-        for ($i = 0; $i < count($intervals); $i++) {
-            $tree->insert($intervals[$i], $i);
-        }
-
-        $this->assertTrue($tree->hasIntersection([2, 3]));
-        $this->assertTrue($tree->hasIntersection([0, 1]));
-        $this->assertTrue($tree->hasIntersection([0, 12]));
-        $this->assertTrue($tree->hasIntersection([0, 0]));
-        $this->assertFalse($tree->hasIntersection([13, 14]));
+        self::assertTrue($this->tree->hasIntersection(NumericInterval::fromArray([2, 3])));
+        self::assertTrue($this->tree->hasIntersection(NumericInterval::fromArray([0, 1])));
+        self::assertTrue($this->tree->hasIntersection(NumericInterval::fromArray([0, 12])));
+        self::assertTrue($this->tree->hasIntersection(NumericInterval::fromArray([0, 0])));
+        self::assertTrue($this->tree->hasIntersection(NumericInterval::fromArray([0, 99])));
+        self::assertTrue($this->tree->hasIntersection(NumericInterval::fromArray([5, 7])));
+        self::assertTrue($this->tree->hasIntersection(NumericInterval::fromArray([6, 7])));
+        self::assertFalse($this->tree->hasIntersection(NumericInterval::fromArray([13, 14])));
+        self::assertFalse($this->tree->hasIntersection(NumericInterval::fromArray([5, 5])));
+        self::assertFalse($this->tree->hasIntersection(NumericInterval::fromArray([5, 6])));
+        self::assertFalse($this->tree->hasIntersection(NumericInterval::fromArray([6, 6])));
     }
 
-    public function testCountIntersections(): void
+    /**
+     * @uses \Danon\IntervalTree\Interval\NumericInterval
+     * @uses \Danon\IntervalTree\Node
+     * @uses \Danon\IntervalTree\NodeColor
+     * @uses \Danon\IntervalTree\Pair
+     */
+    public function testRemove(): void
     {
-        $intervals = [[6, 8], [1, 4], [2, 3], [5, 12], [1, 1], [3, 5], [5, 7]];
-        $tree = new IntervalTree();
-        for ($i = 0; $i < count($intervals); $i++) {
-            $tree->insert($intervals[$i], $i);
-        }
-
-        $this->assertEquals($tree->countIntersections([2, 3]), 3);
-        $this->assertEquals($tree->countIntersections([13, 14]), 0);
-        $this->assertEquals($tree->countIntersections([0, 1]), 2);
+        $initialSize = $this->tree->getSize();
+        self::assertEquals(count(self::TREE_INTERVALS), $initialSize);
+        self::assertTrue($this->tree->remove(NumericInterval::fromArray([7, 8]), '7-8'));
+        self::assertEquals($this->tree->getSize(), --$initialSize);
+        self::assertFalse($this->tree->remove(NumericInterval::fromArray([1, 4]), '1-3'));
+        self::assertEquals($this->tree->getSize(), $initialSize);
+        self::assertTrue($this->tree->remove(NumericInterval::fromArray([1, 4]), '1-4'));
+        self::assertEquals($this->tree->getSize(), --$initialSize);
+        self::assertTrue($this->tree->remove(NumericInterval::fromArray([1, 1]), '1-1'));
+        self::assertEquals($this->tree->getSize(), --$initialSize);
+        self::assertTrue($this->tree->remove(NumericInterval::fromArray([0, 2]), '0-2'));
+        self::assertEquals($this->tree->getSize(), --$initialSize);
+        self::assertFalse($this->tree->remove(NumericInterval::fromArray([0, 0]), '0-0'));
+        self::assertEquals($this->tree->getSize(), $initialSize);
+        self::assertTrue($this->tree->remove(NumericInterval::fromArray([7, 12]), '7-12'));
+        self::assertEquals($this->tree->getSize(), --$initialSize);
+        self::assertFalse($this->tree->remove(NumericInterval::fromArray([7, 12]), '7-90'));
+        self::assertEquals($this->tree->getSize(), $initialSize);
+        self::assertFalse($this->tree->remove(NumericInterval::fromArray([7, 12]), '7-12'));
+        self::assertEquals($this->tree->getSize(), $initialSize);
     }
 
-    public function testGetKeys(): void
+    /**
+     * @uses \Danon\IntervalTree\Interval\NumericInterval
+     * @uses \Danon\IntervalTree\Node
+     * @uses \Danon\IntervalTree\NodeColor
+     * @uses \Danon\IntervalTree\Pair
+     */
+    public function testIsEmpty(): void
     {
-        $intervals = [[6, 8], [1, 4], [2, 3], [5, 12], [1, 1], [3, 5], [5, 7]];
-        $tree = new IntervalTree();
-        for ($i = 0; $i < count($intervals); $i++) {
-            $tree->insert($intervals[$i], $i);
-        }
-
-        $this->assertEquals($tree->getKeys(), [[1, 1], [1, 4], [2, 3], [3, 5], [5, 7], [5, 12], [6, 8]]);
-    }
-
-    public function testInsertManyIntervals(): void
-    {
-        $tree = new IntervalTree();
-        for ($i = 0; $i < 250; $i++) {
-            $low = rand(1, 250);
-            $high = $low + rand(1, 100);
-            $tree->insert([$low, $high], $i);
-        }
-
-        $this->assertEquals(count($tree->getKeys()), 250);
+        self::assertTrue((new IntervalTree())->isEmpty());
+        self::assertFalse($this->tree->isEmpty());
     }
 }

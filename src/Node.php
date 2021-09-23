@@ -2,128 +2,149 @@
 
 namespace Danon\IntervalTree;
 
-class Node
+use Danon\IntervalTree\Interval\IntervalInterface;
+
+final class Node
 {
-
-    public const COLOR_RED = 0;
-    public const COLOR_BLACK = 1;
-
     /**
-     * Reference to left child node
-     *
      * @var Node
      */
-    public $left;
+    private $left;
 
     /**
-     * Reference to right child node
-     *
      * @var Node
      */
-    public $right;
+    private $right;
 
     /**
-     * Reference to parent node
-     * 
      * @var Node
      */
-    public $parent;
+    private $parent;
 
     /**
-     * Color of node (BLACK or RED)
-     * 
-     * @var int
+     * @var NodeColor
      */
-    public $color;
+    private $color;
 
     /**
-     * Key and value
-     *
-     * @var object
+     * @var Pair
      */
-    public $item;
+    private $pair;
 
-    public $max;
+    /**
+     * @var null|IntervalInterface
+     */
+    private $max;
 
-    public function __construct($key = null, $value = null)
+    private function __construct()
     {
-        if (is_null($key)) {
-            $this->item = new Item($key, $value); // key is supposed to be instance of Interval
-        } elseif ($key && is_array($key) && count($key) === 2) {
-            $item = new Item(new Interval(min($key), max($key)), $value);
-            $this->item = $item;
-        }
-
-        $this->max = $this->item->key ? clone $this->item->key : null;
     }
 
-    public function getValue()
+    public static function withPair(Pair $pair): self
     {
-        return $this->item->value;
+        $self = new self();
+        $self->pair = $pair;
+        $self->max = $self->pair->getInterval();
+
+        return $self;
     }
 
-    public function getKey()
+    public static function nil(): self
     {
-        return $this->item->key;
+        $self = new self();
+        $self->color = NodeColor::black();
+        return $self;
     }
 
-    public function isNil()
+    public function setColor(NodeColor $color): void
     {
-        return ($this->item->key === null && $this->item->value === null &&
-            $this->left === null && $this->right === null && $this->color === Node::COLOR_BLACK);
+        $this->color = $color;
     }
 
-    public function lessThan($otherNode)
+    public function getColor(): NodeColor
     {
-        return $this->item->key->lessThan($otherNode->item->key);
+        return $this->color;
     }
 
-    public function equalTo($otherNode)
+    public function getLeft(): Node
+    {
+        return $this->left;
+    }
+
+    public function setLeft(Node $node): void
+    {
+        $this->left = $node;
+    }
+
+    public function getRight(): Node
+    {
+        return $this->right;
+    }
+
+    public function setRight(Node $node): void
+    {
+        $this->right = $node;
+    }
+
+    public function getParent(): ?Node
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?Node $node): void
+    {
+        $this->parent = $node;
+    }
+
+    public function getPair(): Pair
+    {
+        return $this->pair;
+    }
+
+    public function lessThan(Node $otherNode): bool
+    {
+        return $this->getPair()->getInterval()->lessThan($otherNode->getPair()->getInterval());
+    }
+
+    public function equalTo(Node $otherNode): bool
     {
         $valueEqual = true;
-        if ($this->item->value && $otherNode->item->value) {
-            $valueEqual = $this->item->value ? $this->item->value->equalTo($otherNode->item->value) :
-                $this->item->value == $otherNode->item->value;
+        if ($this->getPair()->getValue() && $otherNode->getPair()->getValue()) {
+            $valueEqual = $this->getPair()->getValue() === $otherNode->getPair()->getValue();
         }
-        return $this->item->key->equalTo($otherNode->item->key) && $valueEqual;
+        return $this->getPair()->getInterval()->equalTo($otherNode->getPair()->getInterval()) && $valueEqual;
     }
 
-    public function intersect($otherNode)
+    public function intersect(Node $otherNode): bool
     {
-        return $this->item->key->intersect($otherNode->item->key);
+        return $this->getPair()->getInterval()->intersect($otherNode->getPair()->getInterval());
     }
 
-    public function copyData($otherNode)
+    public function copyPairFrom(Node $otherNode): void
     {
-        $this->item->key = clone $otherNode->item->key;
-        $this->item->value = $otherNode->item->value;
+        $this->pair = $otherNode->getPair();
     }
 
-    public function updateMax()
+    public function updateMax(): void
     {
-        // use key (Interval) max property instead of key.high
-        $this->max = $this->item->key ? $this->item->key->getMax() : null;
-        if ($this->right && $this->right->max) {
-            $this->max = Interval::comparableMax($this->max, $this->right->max); // static method
+        $this->max = $this->getPair()->getInterval();
+        if ($this->getRight()->max !== null) {
+            $this->max = $this->max->merge($this->getRight()->max);
         }
-        if ($this->left && $this->left->max) {
-            $this->max = Interval::comparableMax($this->max, $this->left->max);
+        if ($this->getLeft()->max !== null) {
+            $this->max = $this->max->merge($this->getLeft()->max);
         }
     }
 
-    // Other_node does not intersect any node of left subtree, if this.left.max < other_node.item.key.low
-    public function notIntersectLeftSubtree($searchNode)
+    public function notIntersectLeftSubtree(Node $searchNode): bool
     {
-        //const comparable_less_than = this.item.key.constructor.comparable_less_than;  // static method
-        $high = $this->left->max->high !== null ? $this->left->max->high : $this->left->max;
-        return Interval::comparableLessThan($high, $searchNode->item->key->low);
+        $high = $this->getLeft()->max->getHigh() ?? $this->getLeft()->getPair()->getInterval()->getHigh();
+        return $high < $searchNode->getPair()->getInterval()->getLow();
     }
 
-    // Other_node does not intersect right subtree if other_node.item.key.high < this.right.key.low
-    public function notIntersectRightSubtree($searchNode)
+    public function notIntersectRightSubtree(Node $searchNode): bool
     {
-        //const comparable_less_than = this.item.key.constructor.comparable_less_than;  // static method
-        $low = $this->right->max->low !== null ? $this->right->max->low : $this->right->item->key->low;
-        return Interval::comparableLessThan($searchNode->item->key->high, $low);
+        $low = $this->getRight()->max->getLow() ?? $this->getRight()->getPair()->getInterval()->getLow();
+        return $searchNode->getPair()->getInterval()->getHigh() < $low;
     }
 }
