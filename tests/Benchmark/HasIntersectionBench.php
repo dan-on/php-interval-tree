@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Danon\IntervalTree\Tests\Benchmark;
 
 use Danon\IntervalTree\Interval\NumericInterval;
 use Danon\IntervalTree\IntervalTree;
-use Exception;
 use PhpBench\Benchmark\Metadata\Annotations\Revs;
 
 /**
@@ -35,7 +35,7 @@ class HasIntersectionBench
         $this->bruteForceList = [];
 
         for ($i = 0; $i < self::AMOUNT_INTERVALS_IN_TREE; $i++) {
-            $interval = $this->generateInterval();
+            $interval = $this->generateInterval(self::MAX_INTERVAL_HIGH, self::MAX_INTERVAL_OFFSET);
             $this->tree->insert($interval);
             $this->bruteForceList[] = $interval;
         }
@@ -46,7 +46,7 @@ class HasIntersectionBench
      */
     public function benchTree(): void
     {
-        $searchedInterval = $this->generateInterval();
+        $searchedInterval = $this->generateInterval(self::MAX_INTERVAL_HIGH, self::MAX_INTERVAL_OFFSET);
         $this->tree->hasIntersection($searchedInterval);
     }
 
@@ -55,26 +55,11 @@ class HasIntersectionBench
      */
     public function benchBruteForce(): void
     {
-        $searchedInterval = $this->generateInterval();
+        $searchedInterval = $this->generateInterval(self::MAX_INTERVAL_HIGH, self::MAX_INTERVAL_OFFSET);
         foreach ($this->bruteForceList as $interval) {
             if ($interval->intersect($searchedInterval)) {
                 break;
             }
         }
-    }
-
-    /**
-     * @return NumericInterval
-     */
-    private function generateInterval(): NumericInterval
-    {
-        try {
-            $low = random_int(0, self::MAX_INTERVAL_HIGH);
-            $high = random_int($low, min($low + self::MAX_INTERVAL_OFFSET, self::MAX_INTERVAL_HIGH));
-        } catch (Exception $exception) {
-            echo 'Cannot generate interval: ' . $exception->getMessage();
-            exit;
-        }
-        return new NumericInterval($low, $high);
     }
 }
