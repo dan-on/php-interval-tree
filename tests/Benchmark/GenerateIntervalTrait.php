@@ -1,24 +1,27 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Danon\IntervalTree\Tests\Benchmark;
 
 use Danon\IntervalTree\Interval\NumericInterval;
 use Exception;
+use InvalidArgumentException;
 
 trait GenerateIntervalTrait
 {
     /**
+     * @param int $maxHigh
+     * @param int $maxOffset
      * @return NumericInterval
      */
-    private function generateInterval(): NumericInterval
+    private function generateInterval(int $maxHigh, int $maxOffset): NumericInterval
     {
         try {
-            $low = random_int(0, self::MAX_INTERVAL_HIGH);
-            $high = random_int($low, min($low + self::MAX_INTERVAL_OFFSET, self::MAX_INTERVAL_HIGH));
+            $low = random_int(0, $maxHigh);
+            $high = random_int($low, min($low + $maxOffset, $maxHigh));
         } catch (Exception $exception) {
-            echo 'Cannot generate interval: ' . $exception->getMessage();
-            exit;
+            throw new InvalidArgumentException('Wrong interval arguments', $exception->getCode(), $exception);
         }
         return new NumericInterval($low, $high);
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Danon\IntervalTree\Tests\Benchmark;
@@ -34,7 +35,7 @@ class CountIntersectionsBench
         $this->bruteForceList = [];
 
         for ($i = 0; $i < self::AMOUNT_INTERVALS_IN_TREE; $i++) {
-            $interval = $this->generateInterval();
+            $interval = $this->generateInterval(self::MAX_INTERVAL_HIGH, self::MAX_INTERVAL_OFFSET);
             $this->tree->insert($interval);
             $this->bruteForceList[] = $interval;
         }
@@ -45,7 +46,7 @@ class CountIntersectionsBench
      */
     public function benchTree(): void
     {
-        $searchedInterval = $this->generateInterval();
+        $searchedInterval = $this->generateInterval(self::MAX_INTERVAL_HIGH, self::MAX_INTERVAL_OFFSET);
         $this->tree->countIntersections($searchedInterval);
     }
 
@@ -54,7 +55,7 @@ class CountIntersectionsBench
      */
     public function benchBruteForce(): void
     {
-        $searchedInterval = $this->generateInterval();
+        $searchedInterval = $this->generateInterval(self::MAX_INTERVAL_HIGH, self::MAX_INTERVAL_OFFSET);
         foreach ($this->bruteForceList as $interval) {
             $interval->intersect($searchedInterval);
         }
