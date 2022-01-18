@@ -4,29 +4,56 @@ declare(strict_types=1);
 
 namespace Danon\IntervalTree\Interval;
 
+/**
+ * @template TPoint
+ */
 interface IntervalInterface
 {
-    // @phpstan-ignore-next-line
+    /**
+     * @param TPoint $low
+     * @param TPoint $high
+     */
     public function __construct($low, $high);
 
-    // @phpstan-ignore-next-line
-    public static function fromArray($interval);
+    /**
+     * @phpstan-ignore-next-line
+     * @psalm-template TPoint
+     * @param TPoint[] $interval
+     * @return IntervalInterface<TPoint>
+     */
+    public static function fromArray(array $interval): IntervalInterface;
 
-    // @phpstan-ignore-next-line
+    /**
+     * @return TPoint
+     */
     public function getLow();
 
-    // @phpstan-ignore-next-line
+    /**
+     * @return TPoint
+     */
     public function getHigh();
 
-    // @phpstan-ignore-next-line
-    public function equalTo($otherInterval): bool;
+    /**
+     * @param IntervalInterface<TPoint> $otherInterval
+     * @return bool
+     */
+    public function equalTo(IntervalInterface $otherInterval): bool;
 
-    // @phpstan-ignore-next-line
-    public function lessThan($otherInterval): bool;
+    /**
+     * @param IntervalInterface<TPoint> $otherInterval
+     * @return bool
+     */
+    public function lessThan(IntervalInterface $otherInterval): bool;
 
-    // @phpstan-ignore-next-line
-    public function intersect($otherInterval): bool;
+    /**
+     * @param IntervalInterface<TPoint> $otherInterval
+     * @return bool
+     */
+    public function intersect(IntervalInterface $otherInterval): bool;
 
-    // @phpstan-ignore-next-line
-    public function merge($otherInterval);
+    /**
+     * @param IntervalInterface<TPoint> $otherInterval
+     * @return IntervalInterface<TPoint>
+     */
+    public function merge(IntervalInterface $otherInterval): IntervalInterface;
 }

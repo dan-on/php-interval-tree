@@ -4,20 +4,24 @@ namespace Danon\IntervalTree;
 
 use Danon\IntervalTree\Interval\IntervalInterface;
 
+/**
+ * @template TPoint
+ * @template TValue
+ */
 final class Node
 {
     /**
-     * @var Node
+     * @var Node<TPoint, TValue>
      */
     private $left;
 
     /**
-     * @var Node
+     * @var Node<TPoint, TValue>
      */
     private $right;
 
     /**
-     * @var Node
+     * @var Node<TPoint, TValue>
      */
     private $parent;
 
@@ -27,12 +31,12 @@ final class Node
     private $color;
 
     /**
-     * @var Pair
+     * @var Pair<TPoint, TValue>
      */
     private $pair;
 
     /**
-     * @var null|IntervalInterface
+     * @var null|IntervalInterface<TPoint>
      */
     private $max;
 
@@ -40,6 +44,13 @@ final class Node
     {
     }
 
+    /**
+     * @phpstan-ignore-next-line
+     * @psalm-template TPoint
+     * @psalm-template TValue
+     * @param Pair<TPoint, TValue> $pair
+     * @return static
+     */
     public static function withPair(Pair $pair): self
     {
         $self = new self();
@@ -49,6 +60,9 @@ final class Node
         return $self;
     }
 
+    /**
+     * @return Node<TPoint, TValue>
+     */
     public static function nil(): self
     {
         $self = new self();
@@ -66,46 +80,78 @@ final class Node
         return $this->color;
     }
 
+    /**
+     * @return Node<TPoint, TValue>
+     */
     public function getLeft(): Node
     {
         return $this->left;
     }
 
+    /**
+     * @param Node<TPoint, TValue> $node
+     * @return void
+     */
     public function setLeft(Node $node): void
     {
         $this->left = $node;
     }
 
+    /**
+     * @return Node<TPoint, TValue>
+     */
     public function getRight(): Node
     {
         return $this->right;
     }
 
+    /**
+     * @param Node<TPoint, TValue> $node
+     * @return void
+     */
     public function setRight(Node $node): void
     {
         $this->right = $node;
     }
 
+    /**
+     * @return Node<TPoint, TValue>|null
+     */
     public function getParent(): ?Node
     {
         return $this->parent;
     }
 
+    /**
+     * @param Node<TPoint, TValue>|null $node
+     * @return void
+     */
     public function setParent(?Node $node): void
     {
         $this->parent = $node;
     }
 
+    /**
+     * @return Pair<TPoint, TValue>
+     */
     public function getPair(): Pair
     {
         return $this->pair;
     }
 
+    /**
+     * @param Node<TPoint, TValue> $otherNode
+     * @return bool
+     */
     public function lessThan(Node $otherNode): bool
     {
         return $this->getPair()->getInterval()->lessThan($otherNode->getPair()->getInterval());
     }
 
+    /**
+     * @param Node<TPoint, TValue> $otherNode
+     * @return bool
+     */
     public function equalTo(Node $otherNode): bool
     {
         $valueEqual = true;
@@ -115,16 +161,27 @@ final class Node
         return $this->getPair()->getInterval()->equalTo($otherNode->getPair()->getInterval()) && $valueEqual;
     }
 
+    /**
+     * @param Node<TPoint, TValue> $otherNode
+     * @return bool
+     */
     public function intersect(Node $otherNode): bool
     {
         return $this->getPair()->getInterval()->intersect($otherNode->getPair()->getInterval());
     }
 
+    /**
+     * @param Node<TPoint, TValue> $otherNode
+     * @return void
+     */
     public function copyPairFrom(Node $otherNode): void
     {
         $this->pair = $otherNode->getPair();
     }
 
+    /**
+     * @return void
+     */
     public function updateMax(): void
     {
         $this->max = $this->getPair()->getInterval();
@@ -136,12 +193,20 @@ final class Node
         }
     }
 
+    /**
+     * @param Node<TPoint, TValue> $searchNode
+     * @return bool
+     */
     public function notIntersectLeftSubtree(Node $searchNode): bool
     {
         $high = $this->getLeft()->max->getHigh() ?? $this->getLeft()->getPair()->getInterval()->getHigh();
         return $high < $searchNode->getPair()->getInterval()->getLow();
     }
 
+    /**
+     * @param Node<TPoint, TValue> $searchNode
+     * @return bool
+     */
     public function notIntersectRightSubtree(Node $searchNode): bool
     {
         $low = $this->getRight()->max->getLow() ?? $this->getRight()->getPair()->getInterval()->getLow();

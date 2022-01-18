@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Danon\IntervalTree\Tests\Benchmark;
 
-use Danon\IntervalTree\Interval\NumericInterval;
 use Danon\IntervalTree\IntervalTree;
 use PhpBench\Benchmark\Metadata\Annotations\Revs;
+use Danon\IntervalTree\Interval\IntervalInterface;
 
 /**
  * @BeforeMethods({"init"})
@@ -20,12 +20,12 @@ class CountIntersectionsBench
     private const MAX_INTERVAL_OFFSET      = 100;
 
     /**
-     * @var IntervalTree
+     * @var IntervalTree<int|float, null>
      */
     private $tree;
 
     /**
-     * @var NumericInterval[]
+     * @var IntervalInterface<int|float>[]
      */
     private $bruteForceList;
 

@@ -7,12 +7,16 @@ namespace Danon\IntervalTree;
 use Danon\IntervalTree\Interval\IntervalInterface;
 use Iterator;
 
+/**
+ * @template TPoint
+ * @template TValue
+ */
 final class IntervalTree
 {
-    /** @var Node*/
+    /** @var Node<TPoint, TValue> */
     private $root;
 
-    /** @var Node */
+    /** @var Node<TPoint, TValue> */
     private $nilNode;
 
     /**
@@ -45,9 +49,8 @@ final class IntervalTree
 
     /**
      * Find pairs which intervals intersect with given interval
-     *
-     * @param IntervalInterface $interval
-     * @return Iterator<Pair>
+     * @param IntervalInterface<TPoint> $interval
+     * @return Iterator<Pair<TPoint, TValue>>
      */
     public function findIntersections(IntervalInterface $interval): Iterator
     {
@@ -60,7 +63,7 @@ final class IntervalTree
     /**
      * Returns true if interval has at least one intersection in tree
      *
-     * @param IntervalInterface $interval
+     * @param IntervalInterface<TPoint> $interval
      * @return bool
      */
     public function hasIntersection(IntervalInterface $interval): bool
@@ -72,7 +75,7 @@ final class IntervalTree
     /**
      * Count intervals that has intersections
      *
-     * @param IntervalInterface $interval
+     * @param IntervalInterface<TPoint> $interval
      * @return int
      */
     public function countIntersections(IntervalInterface $interval): int
@@ -84,8 +87,8 @@ final class IntervalTree
     /**
      * Insert new pair (interval + value) into interval tree
      *
-     * @param IntervalInterface $interval
-     * @param mixed $value
+     * @param IntervalInterface<TPoint> $interval
+     * @param TValue $value
      */
     public function insert(IntervalInterface $interval, $value = null): void
     {
@@ -103,8 +106,8 @@ final class IntervalTree
     /**
      * Returns true if interval and value exist in the tree
      *
-     * @param IntervalInterface $interval
-     * @param mixed $value
+     * @param IntervalInterface<TPoint> $interval
+     * @param TValue $value
      * @return bool
      */
     public function exist(IntervalInterface $interval, $value): bool
@@ -116,8 +119,8 @@ final class IntervalTree
     /**
      * Remove node from tree by interval and value
      *
-     * @param IntervalInterface $interval
-     * @param mixed $value
+     * @param IntervalInterface<TPoint> $interval
+     * @param TValue $value
      * @return bool
      */
     public function remove(IntervalInterface $interval, $value): bool
@@ -131,6 +134,10 @@ final class IntervalTree
         return false;
     }
 
+    /**
+     * @param Node<TPoint, TValue> $node
+     * @return void
+     */
     private function recalculateMax(Node $node): void
     {
         $nodeCurrent = $node;
@@ -140,6 +147,10 @@ final class IntervalTree
         }
     }
 
+    /**
+     * @param Node<TPoint, TValue> $insertNode
+     * @return void
+     */
     private function treeInsert(Node $insertNode): void
     {
         $currentNode = $this->root;
@@ -174,7 +185,7 @@ final class IntervalTree
      * And this is a single possible violation
      * Go upwards to the root and re-color until violation will be resolved
      *
-     * @param Node $insertNode
+     * @param Node<TPoint, TValue> $insertNode
      */
     private function insertFixup(Node $insertNode): void
     {
@@ -218,6 +229,10 @@ final class IntervalTree
         $this->root->setColor(NodeColor::black());
     }
 
+    /**
+     * @param Node<TPoint, TValue> $deleteNode
+     * @return void
+     */
     private function treeDelete(Node $deleteNode): void
     {
         if ($deleteNode->getLeft() === $this->nilNode || $deleteNode->getRight() === $this->nilNode) {
@@ -261,6 +276,10 @@ final class IntervalTree
         }
     }
 
+    /**
+     * @param Node<TPoint, TValue> $fixNode
+     * @return void
+     */
     private function deleteFixup(Node $fixNode): void
     {
         $currentNode = $fixNode;
@@ -324,6 +343,11 @@ final class IntervalTree
         $currentNode->setColor(NodeColor::black());
     }
 
+    /**
+     * @param Node<TPoint, TValue> $node
+     * @param Node<TPoint, TValue> $searchNode
+     * @return Node<TPoint, TValue>|null
+     */
     private function treeSearch(Node $node, Node $searchNode): ?Node
     {
         if ($node === $this->nilNode) {
@@ -342,9 +366,9 @@ final class IntervalTree
     }
 
     /**
-     * @param Node $searchNode
-     * @param Node|null $fromNode
-     * @return Iterator<Node>
+     * @param Node<TPoint, TValue> $searchNode
+     * @param Node<TPoint, TValue>|null $fromNode
+     * @return Iterator<Node<TPoint, TValue>>
      */
     private function treeSearchInterval(Node $searchNode, Node $fromNode = null): Iterator
     {
@@ -360,6 +384,10 @@ final class IntervalTree
         }
     }
 
+    /**
+     * @param Node<TPoint, TValue> $node
+     * @return Node<TPoint, TValue>
+     */
     private function localMinimum(Node $node): Node
     {
         $nodeMin = $node;
@@ -369,6 +397,10 @@ final class IntervalTree
         return $nodeMin;
     }
 
+    /**
+     * @param Node<TPoint, TValue> $node
+     * @return Node<TPoint, TValue>|null
+     */
     private function treeSuccessor(Node $node): ?Node
     {
         if ($node->getRight() !== $this->nilNode) {
@@ -385,6 +417,10 @@ final class IntervalTree
         return $nodeSuccessor;
     }
 
+    /**
+     * @param Node<TPoint, TValue> $x
+     * @return void
+     */
     private function rotateLeft(Node $x): void
     {
         $y = $x->getRight();
@@ -415,6 +451,10 @@ final class IntervalTree
         }
     }
 
+    /**
+     * @param Node<TPoint, TValue> $y
+     * @return void
+     */
     private function rotateRight(Node $y): void
     {
         $x = $y->getLeft();
@@ -447,7 +487,7 @@ final class IntervalTree
     }
 
     /**
-     * @return Iterator<Node>
+     * @return Iterator<Node<TPoint, TValue>>
      */
     public function treeWalk(): Iterator
     {
