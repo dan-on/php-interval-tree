@@ -17,7 +17,7 @@ final class IntervalTreeTest extends TestCase
         [7, 8], [1, 4], [2, 3], [7, 12], [1, 1], [3, 4], [7, 7], [0, 2], [0, 2], [0, 3], [9, 12]
     ];
 
-    /** @var IntervalTree  */
+    /** @var IntervalTree<int|float, string>  */
     private $tree;
 
     public function setUp(): void
@@ -42,6 +42,7 @@ final class IntervalTreeTest extends TestCase
     public function testFindIntersections(): void
     {
         $checkInterval = [2, 3];
+        /** @var array<int[]> $overlappingIntervals */
         $overlappingIntervals = [[0, 2], [0, 2], [0, 3], [1, 4], [2, 3], [3, 4]];
         $intersections = $this->tree->findIntersections(NumericInterval::fromArray($checkInterval));
         foreach ($intersections as $index => $pair) {

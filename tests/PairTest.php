@@ -15,7 +15,7 @@ final class PairTest extends TestCase
     private const EXAMPLE_VALUE = '1_5';
 
     /**
-     * @var Pair
+     * @var Pair<int|float, string>
      */
     protected $pair;
 

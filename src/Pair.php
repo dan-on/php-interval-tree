@@ -6,17 +6,21 @@ namespace Danon\IntervalTree;
 
 use Danon\IntervalTree\Interval\IntervalInterface;
 
+/**
+ * @template TPoint
+ * @template TValue
+ */
 final class Pair
 {
-    /** @var IntervalInterface */
+    /** @var IntervalInterface<TPoint> */
     private $interval;
 
-    /** @var mixed */
+    /** @var TValue */
     private $value;
 
     /**
-     * @param IntervalInterface $interval
-     * @param mixed $value
+     * @param IntervalInterface<TPoint> $interval
+     * @param TValue $value
      */
     public function __construct(IntervalInterface $interval, $value = null)
     {
@@ -24,13 +28,16 @@ final class Pair
         $this->value = $value;
     }
 
+    /**
+     * @return IntervalInterface<TPoint>
+     */
     public function getInterval(): IntervalInterface
     {
         return $this->interval;
     }
 
     /**
-     * @return mixed
+     * @return TValue
      */
     public function getValue()
     {

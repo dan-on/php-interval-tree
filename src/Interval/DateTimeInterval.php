@@ -9,22 +9,26 @@ use InvalidArgumentException;
 
 use function count;
 
+/**
+ * @template TPoint of DateTimeInterface
+ * @implements IntervalInterface<TPoint>
+ */
 final class DateTimeInterval implements IntervalInterface
 {
     /**
-     * @var DateTimeInterface
+     * @var TPoint
      */
     private $low;
 
     /**
-     * @var DateTimeInterface
+     * @var TPoint
      */
     private $high;
 
     /**
      * DateTimeInterval constructor
-     * @param DateTimeInterface $low
-     * @param DateTimeInterface $high
+     * @param TPoint $low
+     * @param TPoint $high
      */
     public function __construct($low, $high)
     {
@@ -37,10 +41,12 @@ final class DateTimeInterval implements IntervalInterface
     }
 
     /**
-     * @param DateTimeInterface[] $interval
-     * @return DateTimeInterval
+     * @phpstan-ignore-next-line
+     * @psalm-template TPoint of DateTimeInterface
+     * @param TPoint[] $interval
+     * @return IntervalInterface<TPoint>
      */
-    public static function fromArray($interval): DateTimeInterval
+    public static function fromArray(array $interval): IntervalInterface
     {
         if (count($interval) !== 2) {
             throw new InvalidArgumentException('Wrong interval array');
@@ -59,20 +65,20 @@ final class DateTimeInterval implements IntervalInterface
     }
 
     /**
-     * @param DateTimeInterval $otherInterval
+     * @param IntervalInterface<TPoint> $otherInterval
      * @return bool
      */
-    public function equalTo($otherInterval): bool
+    public function equalTo(IntervalInterface $otherInterval): bool
     {
         return $this->getLow()->getTimestamp() === $otherInterval->getLow()->getTimestamp() &&
             $this->getHigh()->getTimestamp() === $otherInterval->getHigh()->getTimestamp();
     }
 
     /**
-     * @param DateTimeInterval $otherInterval
+     * @param IntervalInterface<TPoint> $otherInterval
      * @return bool
      */
-    public function lessThan($otherInterval): bool
+    public function lessThan(IntervalInterface $otherInterval): bool
     {
         return $this->getLow()->getTimestamp() < $otherInterval->getLow()->getTimestamp() ||
             (
@@ -82,19 +88,19 @@ final class DateTimeInterval implements IntervalInterface
     }
 
     /**
-     * @param DateTimeInterval $otherInterval
+     * @param IntervalInterface<TPoint> $otherInterval
      * @return bool
      */
-    public function intersect($otherInterval): bool
+    public function intersect(IntervalInterface $otherInterval): bool
     {
         return !($this->getHigh() < $otherInterval->getLow() || $otherInterval->getHigh() < $this->getLow());
     }
 
     /**
-     * @param DateTimeInterval $otherInterval
-     * @return DateTimeInterval
+     * @param IntervalInterface<TPoint> $otherInterval
+     * @return IntervalInterface<TPoint>
      */
-    public function merge($otherInterval): DateTimeInterval
+    public function merge(IntervalInterface $otherInterval): IntervalInterface
     {
         return new DateTimeInterval(
             min($this->getLow(), $otherInterval->getLow()),
