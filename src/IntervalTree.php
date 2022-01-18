@@ -181,10 +181,6 @@ final class IntervalTree
     }
 
     /**
-     * After insertion insert_node may have red-colored parent
-     * And this is a single possible violation
-     * Go upwards to the root and re-color until violation will be resolved
-     *
      * @param Node<TPoint, TValue> $insertNode
      */
     private function insertFixup(Node $insertNode): void
@@ -241,7 +237,6 @@ final class IntervalTree
             $cutNode = $this->treeSuccessor($deleteNode);
         }
 
-        // fix_node if single child of cut_node
         if ($cutNode->getLeft() !== $this->nilNode) {
             $fixNode = $cutNode->getLeft();
         } else {
@@ -258,17 +253,15 @@ final class IntervalTree
             } else {
                 $cutNode->getParent()->setRight($fixNode);
             }
-            $cutNode->getParent()->updateMax(); // update max property of the parent
+            $cutNode->getParent()->updateMax();
         }
 
-        $this->recalculateMax($fixNode); // update max property upward from fix_node to root
+        $this->recalculateMax($fixNode);
 
-        // deleteNode becomes cutNode, it means that we cannot hold reference
-        // to node in outer structure and we will have to delete by key, additional search need
         if ($cutNode !== $deleteNode) {
             $deleteNode->copyPairFrom($cutNode);
-            $deleteNode->updateMax(); // update max property of the cut node at the new place
-            $this->recalculateMax($deleteNode); // update max property upward from deleteNode to root
+            $deleteNode->updateMax();
+            $this->recalculateMax($deleteNode);
         }
 
         if ($cutNode->getColor()->isBlack()) {
@@ -305,7 +298,6 @@ final class IntervalTree
                         $brotherNode->setColor(NodeColor::red());
                         $brotherNode->getLeft()->setColor(NodeColor::black());
                         $this->rotateRight($brotherNode);
-                        $brotherNode = $currentNode->getParent()->getRight();
                     }
                     $brotherNode->setColor($currentNode->getParent()->getColor());
                     $currentNode->getParent()->setColor(NodeColor::black());
@@ -329,7 +321,6 @@ final class IntervalTree
                         $brotherNode->setColor(NodeColor::red());
                         $brotherNode->getRight()->setColor(NodeColor::black());
                         $this->rotateLeft($brotherNode);
-                        $brotherNode = $currentNode->getParent()->getLeft();
                     }
                     $brotherNode->setColor($currentNode->getParent()->getColor());
                     $currentNode->getParent()->setColor(NodeColor::black());
@@ -344,25 +335,25 @@ final class IntervalTree
     }
 
     /**
+     * @param Node<TPoint, TValue> $startingNode
      * @param Node<TPoint, TValue> $node
-     * @param Node<TPoint, TValue> $searchNode
      * @return Node<TPoint, TValue>|null
      */
-    private function treeSearch(Node $node, Node $searchNode): ?Node
+    private function treeSearch(Node $startingNode, Node $node): ?Node
     {
-        if ($node === $this->nilNode) {
+        if ($startingNode === $this->nilNode) {
             return null;
         }
 
-        if ($searchNode->equalTo($node)) {
-            return $node;
+        if ($node->equalTo($startingNode)) {
+            $searchedNode = $startingNode;
+        } elseif ($node->lessThan($startingNode)) {
+            $searchedNode = $this->treeSearch($startingNode->getLeft(), $node);
+        } else {
+            $searchedNode = $this->treeSearch($startingNode->getRight(), $node);
         }
 
-        if ($searchNode->lessThan($node)) {
-            return $this->treeSearch($node->getLeft(), $searchNode);
-        }
-
-        return $this->treeSearch($node->getRight(), $searchNode);
+        return $searchedNode;
     }
 
     /**
@@ -424,22 +415,22 @@ final class IntervalTree
     private function rotateLeft(Node $x): void
     {
         $y = $x->getRight();
-        $x->setRight($y->getLeft()); // b goes to x.right
+        $x->setRight($y->getLeft());
 
         if ($y->getLeft() !== $this->nilNode) {
-            $y->getLeft()->setParent($x); // x becomes parent of b
+            $y->getLeft()->setParent($x);
         }
-        $y->setParent($x->getParent()); // move parent
+        $y->setParent($x->getParent());
 
         if ($x->getParent() === null) {
-            $this->root = $y; // y becomes root
+            $this->root = $y;
         } elseif ($x === $x->getParent()->getLeft()) {
             $x->getParent()->setLeft($y);
         } else {
             $x->getParent()->setRight($y);
         }
-        $y->setLeft($x); // x becomes left child of y
-        $x->setParent($y); // and y becomes parent of x
+        $y->setLeft($x);
+        $x->setParent($y);
 
         if ($x !== $this->nilNode) {
             $x->updateMax();
@@ -459,22 +450,22 @@ final class IntervalTree
     {
         $x = $y->getLeft();
 
-        $y->setLeft($x->getRight()); // b goes to y.left
+        $y->setLeft($x->getRight());
 
         if ($x->getRight() !== $this->nilNode) {
-            $x->getRight()->setParent($y); // y becomes parent of b
+            $x->getRight()->setParent($y);
         }
-        $x->setParent($y->getParent()); // move parent
+        $x->setParent($y->getParent());
 
-        if ($y->getParent() === null) { // x becomes root
+        if ($y->getParent() === null) {
             $this->root = $x;
         } elseif ($y === $y->getParent()->getLeft()) {
             $y->getParent()->setLeft($x);
         } else {
             $y->getParent()->setRight($x);
         }
-        $x->setRight($y); // y becomes right child of x
-        $y->setParent($x); // and x becomes parent of y
+        $x->setRight($y);
+        $y->setParent($x);
 
         if ($y !== $this->nilNode) {
             $y->updateMax();
@@ -489,7 +480,7 @@ final class IntervalTree
     /**
      * @return Iterator<Node<TPoint, TValue>>
      */
-    public function treeWalk(): Iterator
+    private function treeWalk(): Iterator
     {
         if ($this->root !== null) {
             $stack = [$this->root];
