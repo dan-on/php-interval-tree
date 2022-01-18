@@ -42,7 +42,7 @@ class CountIntersectionsBench
     }
 
     /**
-     * @Revs(1000)
+     * @Revs(10)
      */
     public function benchTree(): void
     {
@@ -51,7 +51,7 @@ class CountIntersectionsBench
     }
 
     /**
-     * @Revs(1000)
+     * @Revs(10)
      */
     public function benchBruteForce(): void
     {
