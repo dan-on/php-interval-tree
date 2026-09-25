@@ -473,7 +473,7 @@ final class IntervalTree
 
         $x = $y->getParent();
         if ($x !== null && $x !== $this->nilNode) {
-            $y->updateMax();
+            $x->updateMax();
         }
     }
 
