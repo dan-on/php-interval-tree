@@ -290,7 +290,7 @@ final class IntervalTree
                     $brotherNode = $currentNode->getParent()->getRight();
                 }
 
-                if ($brotherNode->getLeft()->getColor()->isBlack()) {
+                if ($brotherNode->getLeft()->getColor()->isBlack() && $brotherNode->getRight()->getColor()->isBlack()) {
                     $brotherNode->setColor(NodeColor::red());
                     $currentNode = $currentNode->getParent();
                 } else {
@@ -298,6 +298,7 @@ final class IntervalTree
                         $brotherNode->setColor(NodeColor::red());
                         $brotherNode->getLeft()->setColor(NodeColor::black());
                         $this->rotateRight($brotherNode);
+                        $brotherNode = $currentNode->getParent()->getRight();
                     }
                     $brotherNode->setColor($currentNode->getParent()->getColor());
                     $currentNode->getParent()->setColor(NodeColor::black());
@@ -313,7 +314,7 @@ final class IntervalTree
                     $this->rotateRight($currentNode->getParent());
                     $brotherNode = $currentNode->getParent()->getLeft();
                 }
-                if ($brotherNode->getRight()->getColor()->isBlack()) {
+                if ($brotherNode->getRight()->getColor()->isBlack() && $brotherNode->getLeft()->getColor()->isBlack()) {
                     $brotherNode->setColor(NodeColor::red());
                     $currentNode = $currentNode->getParent();
                 } else {
@@ -321,6 +322,7 @@ final class IntervalTree
                         $brotherNode->setColor(NodeColor::red());
                         $brotherNode->getRight()->setColor(NodeColor::black());
                         $this->rotateLeft($brotherNode);
+                        $brotherNode = $currentNode->getParent()->getLeft();
                     }
                     $brotherNode->setColor($currentNode->getParent()->getColor());
                     $currentNode->getParent()->setColor(NodeColor::black());
